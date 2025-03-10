@@ -1,0 +1,12 @@
+si vede qualcosa, non sono sicuro di cosa
+
+
+stiamo guardando oggetti, coda fifo, si vede incapsulamento con una queue sottoforma di vettore, ma incapsulamento
+mi dice che, cambiando anche cosa c'è sotto the hood, fintanto che operazioni rimangono eguali non cambia
+l'utilizzo, perdo un minimo di efficenza  ma guadagno in utilizzabilità
+
+cono template posso usare stessa struttura per diversi tipi di dati
+
+Stack, LIFO
+
+push, pop, tutto sulla fine
