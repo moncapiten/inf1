@@ -52,7 +52,7 @@ void insertionSort(vector<int> &arr){
     for(int i=1; i<n; i++){
         int key = arr[i];
         int j = i-1;
-        while(j >= 0 && arr[j] > key){
+        while(j > 0 && arr[j] > key){
             arr[j+1] = arr[j];
             j--;
         }
@@ -92,7 +92,7 @@ vector<int> generateRandomArray(int n, int min, int max){
 
 int main(){
 //    vector<int> arr = {5, 2, 9, 1, 5, 6};
-    constexpr int n = 10000;
+    constexpr int n = 100000;
     constexpr int min = 1;
     constexpr int max = 10;
 
