@@ -95,7 +95,7 @@ bool is_balanced(const string & s){
     Stack<char> stack;
 
     for (const auto & c : s){
-        cout << stack << endl;
+//        cout << stack << endl;            // stack usage visualization, kinda useful from time to time
         if (c == '(' || c == '[' || c == '{'){
             stack.push(c);
         } else if (c == ')' || c == ']' || c == '}'){
