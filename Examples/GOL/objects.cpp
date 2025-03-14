@@ -1,5 +1,7 @@
 #include <iostream>
 #include <vector>
+// necessary for coloured text
+#include <windows.h>
 #include "header.hpp"
 
 using namespace std;
@@ -48,8 +50,10 @@ class Grid{
         }
 
 
-        // the board gets recreated anew, if any cell has 2 or 3 living neighbour keeps living, otherwise dies
-        // if any dead cell has 3 living neighbours, it becomes alive
+        //                                 DA RULES
+        // every generation the board gets recreated anew
+        // if a cell has 2 living neighbour it remains in the state it was
+        // if any cell has 3 living neighbours, it becomes alive( or stays)
 
         void step(){
             vector<vector<bool>> newGrid = vector<vector<bool>>(rows, vector<bool>(cols, 0));
@@ -110,12 +114,25 @@ class Grid{
             stepCounter++;
         }
 
-
+        // << overload to simplify the printing process
         friend ostream & operator<<(ostream & os, const Grid & g){
+            
+            // necessary to control the text's color
+            HANDLE hConsole;
+            int k;
+            hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+
+
             cout << "Step: " << g.stepCounter << endl << endl;
             for(int i = 0; i < g.rows; i++){
                 for(int j = 0; j < g.cols; j++){
+                    // set text to green if cell is alive
+                    if(g.grid[i][j]){
+                        SetConsoleTextAttribute(hConsole, 10);
+                    }
                     os << g.grid[i][j] << " ";
+                    // text back to white for normal reporting
+                    SetConsoleTextAttribute(hConsole, 15);
                 }
                 os << endl;
             }
