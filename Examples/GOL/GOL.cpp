@@ -10,6 +10,7 @@
 using namespace std::chrono;
 using namespace std::this_thread;
 
+
 int numrows = 5;
 int numcols = 5;
 int maxStepping = 7;
@@ -84,7 +85,7 @@ int main(){
     for(int i = 0; i < maxStepping; i++){
         g.step();
         cout << g << endl;
-        sleep_for(milliseconds(500));
+        sleep_for(milliseconds(750));
     }
 
 
