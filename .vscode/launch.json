@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Users/monca/Desktop/All/Uni/3°/Info/inf1/5",
-      "program": "c:/Users/monca/Desktop/All/Uni/3°/Info/inf1/5/build/Debug/outDebug",
+      "cwd": "c:/Users/monca/Desktop/All/Uni/3°/Info/inf1/Examples/GOL",
+      "program": "c:/Users/monca/Desktop/All/Uni/3°/Info/inf1/Examples/GOL/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
