@@ -278,17 +278,17 @@
      const char *value;
  } extended_metadata[] =
  {
-     { SDL_PROP_APP_METADATA_URL_STRING, "https://examples.libsdl.org/SDL3/demo/01-snake/" },
-     { SDL_PROP_APP_METADATA_CREATOR_STRING, "SDL team" },
-     { SDL_PROP_APP_METADATA_COPYRIGHT_STRING, "Placed in the public domain" },
-     { SDL_PROP_APP_METADATA_TYPE_STRING, "game" }
+    // { SDL_PROP_APP_METADATA_URL_STRING, "https://examples.libsdl.org/SDL3/demo/01-snake/" },
+     { SDL_PROP_APP_METADATA_CREATOR_STRING, "moncapiten" },
+    // { SDL_PROP_APP_METADATA_COPYRIGHT_STRING, "Placed in the public domain" },
+    // { SDL_PROP_APP_METADATA_TYPE_STRING, "game" }
  };
  
  SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
  {
      size_t i;
  
-     if (!SDL_SetAppMetadata("Example Snake game", "1.0", "com.example.Snake")) {
+     if (!SDL_SetAppMetadata("Example Game of Life", "0.1", "com.example.GOL")) {
          return SDL_APP_FAILURE;
      }
  
