@@ -107,7 +107,7 @@ class Grid{
 
 
                 }
-                cout << endl;
+                if(debugMode) cout << endl;
             }
 
             grid = newGrid;

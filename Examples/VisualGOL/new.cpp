@@ -10,30 +10,23 @@
 #define SDL_WINDOW_WIDTH           (BLOCK_SIZE_IN_PIXELS * GAME_WIDTH)
 #define SDL_WINDOW_HEIGHT          (BLOCK_SIZE_IN_PIXELS * GAME_HEIGHT)
 
-#define GAME_WIDTH  10
-#define GAME_HEIGHT 10
-#define MATRIX_SIZE (GAME_WIDTH * GAME_HEIGHT)
-
-//#define THREE_BITS  0x7U /* ~CHAR_MAX >> (CHAR_BIT - SNAKE_CELL_MAX_BITS) */
-#define SHIFT(x, y) (((x) + ((y) * GAME_WIDTH)) * CELL_MAX_BITS)
-
-
-#define SNAKE_CELL_MAX_BITS 3U
-
-
-
+#define GAME_WIDTH  30
+#define GAME_HEIGHT 30
 
 Grid g(GAME_WIDTH, GAME_HEIGHT);
 
-
+bool debug = false;
+bool running = true;
 
 
 typedef struct
 {
     SDL_Window *window;
     SDL_Renderer *renderer;
-//    SnakeContext snake_ctx;
     Uint64 last_step;
+//    bool running;
+//    bool debug;
+//    Grid g;
 } AppState;
 
 
@@ -44,42 +37,47 @@ static void set_rect_xy_(SDL_FRect *r, short x, short y)
 }
 
 
-/*
-static SDL_AppResult handle_key_event_(SnakeContext *ctx, SDL_Scancode key_code)
+static SDL_AppResult handle_keyevent(SDL_Keycode key)
 {
-    switch (key_code) {
-    // Quit. 
+    switch (key) {
     case SDL_SCANCODE_ESCAPE:
     case SDL_SCANCODE_Q:
         return SDL_APP_SUCCESS;
-    // Restart the game as if the program was launched. 
     case SDL_SCANCODE_R:
-        snake_initialize(ctx);
+        g.generateGrid(true); // reset the game
         break;
-    // Decide new direction of the snake. 
-    case SDL_SCANCODE_RIGHT:
-        snake_redir(ctx, SNAKE_DIR_RIGHT);
+    case SDL_SCANCODE_RIGHT: // manually step the game
+        if(!(running)) g.step();
         break;
-    case SDL_SCANCODE_UP:
-        snake_redir(ctx, SNAKE_DIR_UP);
+    case SDL_SCANCODE_D: // toggle debug mode
+        debug = !(debug);
         break;
-    case SDL_SCANCODE_LEFT:
-        snake_redir(ctx, SNAKE_DIR_LEFT);
-        break;
-    case SDL_SCANCODE_DOWN:
-        snake_redir(ctx, SNAKE_DIR_DOWN);
+    case SDL_SCANCODE_SPACE: // pause/unpause the game
+        running = !(running);
         break;
     default:
         break;
     }
     return SDL_APP_CONTINUE;
 }
-*/
+
+static SDL_AppResult handle_mouseEvent(SDL_MouseButtonEvent event, int x, int y)
+{
+    if(event.button == SDL_BUTTON_LEFT){
+        if(!running && x < SDL_WINDOW_WIDTH && y < SDL_WINDOW_HEIGHT && x >= 0 && y >= 0){
+            int x = event.x / BLOCK_SIZE_IN_PIXELS;
+            int y = event.y / BLOCK_SIZE_IN_PIXELS;
+            g.set(x, y, !g.get(x, y));
+        }
+    }
+    return SDL_APP_CONTINUE;
+}
+
+
 
 SDL_AppResult SDL_AppIterate(void *appstate)
 {
     AppState *as = (AppState *)appstate;
-//    SnakeContext *ctx = &as->snake_ctx;
     const Uint64 now = SDL_GetTicks();
     SDL_FRect r;
     unsigned i;
@@ -91,7 +89,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     // several times.
     
     while ((now - as->last_step) >= STEP_RATE_IN_MILLISECONDS) {
-        g.step();
+        if(running) g.step();
         as->last_step += STEP_RATE_IN_MILLISECONDS;
     }
 
@@ -109,20 +107,16 @@ SDL_AppResult SDL_AppIterate(void *appstate)
                 SDL_SetRenderDrawColor(as->renderer, 0, 255, 0, SDL_ALPHA_OPAQUE);
                 SDL_RenderFillRect(as->renderer, &r);
             }
-//            else {
-//                SDL_SetRenderDrawColor(as->renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
-//            }
-//            SDL_RenderFillRect(as->renderer, &r);
 
-            using namespace std;
-            cout << g << "\n";
+
+            if(debug){
+                using namespace std;
+               cout << g << "\n";
+            }
         }
     }
 
 
-//    SDL_SetRenderDrawColor(as->renderer, 255, 255, 0, SDL_ALPHA_OPAQUE); /*head*/
-//    set_rect_xy_(&r, ctx->head_xpos, ctx->head_ypos);
-    SDL_RenderFillRect(as->renderer, &r);
     SDL_RenderPresent(as->renderer);
     return SDL_APP_CONTINUE;
 }
@@ -136,7 +130,7 @@ static const struct
    // { SDL_PROP_APP_METADATA_URL_STRING, "https://examples.libsdl.org/SDL3/demo/01-snake/" },
     { SDL_PROP_APP_METADATA_CREATOR_STRING, "moncapiten" },
    // { SDL_PROP_APP_METADATA_COPYRIGHT_STRING, "Placed in the public domain" },
-   // { SDL_PROP_APP_METADATA_TYPE_STRING, "game" }
+    { SDL_PROP_APP_METADATA_TYPE_STRING, "game" }
 };
 
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
@@ -168,7 +162,6 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
         return SDL_APP_FAILURE;
     }
 
-    //snake_initialize(&as->snake_ctx);
     g.generateGrid(true);
 
     as->last_step = SDL_GetTicks();
@@ -179,12 +172,14 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 
 SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event)
 {
-//    SnakeContext *ctx = &((AppState *)appstate)->snake_ctx;
     switch (event->type) {
     case SDL_EVENT_QUIT:
         return SDL_APP_SUCCESS;
-//    case SDL_EVENT_KEY_DOWN:
-//        return handle_key_event_(ctx, event->key.scancode);
+    case SDL_EVENT_KEY_DOWN:
+        return handle_keyevent(event->key.scancode);
+    case SDL_EVENT_MOUSE_BUTTON_DOWN:
+        return handle_mouseEvent(event->button, event->button.x, event->button.y);
+        break;
     }
     return SDL_APP_CONTINUE;
 }
