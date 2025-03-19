@@ -93,11 +93,11 @@ void reverse(vector<int>::iterator start, vector<int>::iterator end){
 
 
 
-constexpr int SIZE = 1000000000;
+constexpr int SIZE = 100000;
 constexpr int MIN = 0;
 constexpr int MAX = 10;
 
-vector<bool> chooseWhich = {true, false, false};
+vector<bool> chooseWhich = {true, true, true};
 
 
 int main(){
