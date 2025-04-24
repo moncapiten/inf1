@@ -95,11 +95,10 @@ int main(){
     map.insert(13);
     map.insert(14);
     map.insert(15);
-//    map.remove(2);
-
 
     cout << map << endl;
 
+    map.remove(7);
     map.remove(8);
 
     cout << map << endl;
