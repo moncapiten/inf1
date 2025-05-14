@@ -18,7 +18,7 @@ void leggiGrafo(string filename){
         int u, v;
         fin >> u >> v;  // coppia non ordinata
         adj[u].push_back(v);
-//        adj[v].push_back(u);
+//        adj[v].push_back(u); // for non oriented graph, uncomment this line
     }
 }
 
