@@ -215,7 +215,6 @@ void translator(vector<string>& group){
         
 
 
-        /****************************************************************** WRITTEN BY COPILOT - TO BE CHECKED ****************************************************/
 
         if( *i == "probability" ){
             cout << "probability" << endl; // print the probability group
@@ -503,7 +502,7 @@ void streamFile(string filename){
 
 
 int main(){
-    string filename = "cancer.bif"; // file name
+    string filename = "asia.bif"; // file name
 
 
     streamFile(filename); // read the file and print its content
