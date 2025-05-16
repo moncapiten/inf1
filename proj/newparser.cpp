@@ -55,8 +55,16 @@ void translator(vector<string>& group){
                 vector<string> states; // vector to hold the states
 
                 auto firstParenthesisIndex = find(i, group.end(), "{"); // find the first parenthesis
-                
+                auto lastParenthesisIndex = find(i, group.end(), "}"); // find the last parenthesis
 
+                for( auto j = next(firstParenthesisIndex); j < lastParenthesisIndex; ++j){
+                    if( *j == "," ){
+                        continue;
+                    } else {
+                        states.push_back(*j); // add the state to the vector
+                    }
+                }
+                /*
                 states.push_back( *next(firstParenthesisIndex) );
 //                string firstStateName = *next(firstParenthesisIndex); // get the first state name
 
@@ -68,6 +76,8 @@ void translator(vector<string>& group){
                     states.push_back( *next( next( next(firstParenthesisIndex) ) ) );
                 }
 
+                */
+
                 // assign the states to the node
                 nodes[substitutionIndeces[group[1]]].states = states; // assign the states to the node
 
@@ -77,7 +87,6 @@ void translator(vector<string>& group){
         
 
 
-        //  IM PRETTY SURE IT CAN BE IMPOROVED, THE PARENTHESES EITHER CONTAIN 1 NAME, THE OWNER, OR >1, AND THE SECOND ONWARD IS JUST THE PARENTS, IT SHOULD WORK BETTER IF I CAN MANAGE TO DO THAT WAY
         if( *i == "probability" ){
 //            cout << "probability" << endl; // print the probability group
             vector<double> probabilities; // vector to hold the probabilities
@@ -86,6 +95,25 @@ void translator(vector<string>& group){
             string owner;
 //            vector<string> parents; // vector to hold the parents
 
+
+
+            for( auto j = next(firstParenthesisIndex); j < lastParenthesisIndex; ++j){
+                if( *j == "," || *j == "|" ){
+                    continue;
+                } else {
+                    if( owner == "" ){
+                        owner = *j; // get the owner of the node
+                    } else {
+                        nodes[substitutionIndeces[owner]].parents.push_back(substitutionIndeces[*j]); // add the parent to the node
+                        nodes[substitutionIndeces[*j]].children.push_back(substitutionIndeces[owner]); // add the child to the parent
+                    }
+                }
+            }
+
+
+            return;   ///      WE ARE NOW ABLE TO USE ONLY ONE FUNCTION TO DETERMINE PARENTS AND CHILDREN IN ALL CASES
+                    ////       GONNA WORK NOW ON THE PROBABILITIES IN ALL CASES WITH A LOOP, WE GO FROM PARENTHESIS TO PARENTHESIS AND CHECK THE SUMS OF EVERY N-TUPLE WITH N = #PARENTS
+                            // PUT THEM ALL IN A VECTOR AND SHOULD BE ABLE TO DO MARGNIALIZATION WITH OLD LOOP FROM THERE
 
             if( next(next(firstParenthesisIndex)) != lastParenthesisIndex) {
                 
@@ -104,6 +132,7 @@ void translator(vector<string>& group){
                 }
 
 
+                
 
                 auto firstParenthesisIndex = find(i, group.end(), "{"); // find the first parenthesis
                 auto lastParenthesisIndex = find(i, group.end(), "}"); // find the last parenthesis
@@ -248,12 +277,12 @@ void tokenizer(string line) {
     for (size_t i = 0; i < line.size(); ++i) {
         char c = line[i];
 
-        if (isalpha(c)) {
+        if (isalpha(c) || isdigit(c) || c == '_' || c == '-' || c == '/' || c == ':' || c == '+' || c == '=' || c == '<' || c == '>' || c == '!' || c == '?' || c == '&' || c == '^' || c == '%' || c == '#' || c == '@' || c == '.') { 
             token += c;
         }
-        else if (isdigit(c) || (c == '.' && i > 0 && isdigit(line[i-1]) && i+1 < line.size() && isdigit(line[i+1]))) {
-            token += c; // part of a number like 0.2
-        }
+//        else if (c == '.' && i > 0 && isdigit(line[i - 1]) && i + 1 < line.size() && isdigit(line[i + 1])) {
+//            token += c; // part of a number
+//        }
         else {
             if (!token.empty()) {
                 grouper(dividedGroups, token);
@@ -292,7 +321,7 @@ void streamFile(string filename){
 
 
 int main(){
-    string filename = "hailfinder.bif"; // file name
+    string filename = "child.bif"; // file name
 
 
     streamFile(filename); // read the file and print its content
