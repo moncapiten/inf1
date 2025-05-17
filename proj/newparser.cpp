@@ -111,6 +111,111 @@ void translator(vector<string>& group){
             }
 
 
+            firstParenthesisIndex = find(i, group.end(), "{"); // find the first parenthesis
+            lastParenthesisIndex = find(i, group.end(), "}"); // find the last parenthesis
+            int parenDepth = 0; // variable to hold the parenthesis depth
+
+
+            for(auto j = next(firstParenthesisIndex); j < lastParenthesisIndex; ++j){
+                if( *j == ";" ){
+                    if(parenDepth != 0){
+                        return; // return an error code
+                    } else{
+                        continue; // continue if the parenthesis is not closed
+                    }
+                } else if( *j == "(" ){
+                    parenDepth++; // increase the parenthesis depth
+                } else if( *j == ")" ){
+                    parenDepth--; // decrease the parenthesis depth
+                } else if( *j == "," || *j == "table" ){
+                    continue; // continue if the token is a comma
+                } else if (parenDepth == 0){
+                    cout << *j << " "; // print the token if the parenthesis depth is 0
+                    nodes[substitutionIndeces[owner]].probabilities.push_back(stod(*j)); // convert the string to double and add it to the vector
+                }
+            }
+
+
+
+            if( nodes[substitutionIndeces[owner]].parents.size() == 0 ){
+                nodes[substitutionIndeces[owner]].pureProb = nodes[substitutionIndeces[owner]].probabilities; // assign the probabilities to the node
+                return; // return if the node has no parents
+            }
+            return;
+
+/*
+            vector<double> sums( nodes[substitutionIndeces[owner]].states.size(), 0.0 ); // vector to hold the sums of the probabilities
+            int counterToSelectProbs = 0;
+
+
+            // here is the calculation of marginal probabilities
+            for( auto j = nodes[substitutionIndeces[owner]].probabilities.begin(); j < nodes[substitutionIndeces[owner]].probabilities.end(); j+=nodes[substitutionIndeces[owner]].states.size()){
+
+                for( auto k = j; k < j + nodes[substitutionIndeces[owner]].states.size(); k++){
+                    double toBeAdded0 = *k; // get the first probability
+
+                    vector<int> bitVector = toBitVector(counterToSelectProbs, nodes[substitutionIndeces[owner]].parents.size() ); // convert the counter to a bit vector
+                    reverse(bitVector.begin(), bitVector.end()); // reverse the vector
+
+                    for( int m = 0; m < nodes[substitutionIndeces[owner]].parents.size(); m++){
+                        toBeAdded0 *= nodes[ nodes[substitutionIndeces[owner]].parents[m] ].pureProb[ bitVector[m] ]; // multiply the probabilities
+                    }
+                    sums[k-j] += toBeAdded0; // add the probabilities to the sum
+                }
+                counterToSelectProbs++;
+            }
+
+            nodes[substitutionIndeces[owner]].pureProb = sums; // assign the pure probabilities to the node
+*/
+
+            return;
+
+
+
+
+/*
+
+                double toBeAdded0 = *k; // get the first probability
+                double toBeAdded1 = *(k+1); // get the second probability
+
+                cout << *k << " "; // print the probabilities
+                cout << *(k+1) << " "; // print the probabilities
+
+                cout << counterToSelectProbs << " "; // print the probabilities
+                vector<int> bitVector = toBitVector(counterToSelectProbs, nodes[substitutionIndeces[owner]].parents.size() ); // convert the counter to a bit vector
+                reverse(bitVector.begin(), bitVector.end()); // reverse the vector
+                string bitString = toString( bitVector );
+                cout << bitString << " "; // print the probabilities
+
+                
+
+                for( int m = 0; m < nodes[substitutionIndeces[owner]].parents.size(); m++){
+//                        cout << nodes[ nodes[substitutionIndeces[owner]].parents[m] ].name << " ";
+//                        cout << nodes[ nodes[substitutionIndeces[owner]].parents[m] ].pureProb[counterToSelectProbs] << " "; // print the pure probabilities
+                    toBeAdded0 *= nodes[ nodes[substitutionIndeces[owner]].parents[m] ].pureProb[ bitVector[m] ]; // multiply the probabilities
+                    toBeAdded1 *= nodes[ nodes[substitutionIndeces[owner]].parents[m] ].pureProb[ bitVector[m] ]; // multiply the probabilities
+                }
+
+                sums[0] += toBeAdded0; // add the probabilities to the sum
+                sums[1] += toBeAdded1; // add the probabilities to the sum
+
+
+                cout << "| "; // print the separator
+
+                counterToSelectProbs++;
+            }
+
+            nodes[substitutionIndeces[owner]].pureProb = sums; // assign the pure probabilities to the node
+            cout << "\n" << sums[0] << " " << sums[1] << "\n\n"; // print the sums of the probabilities
+*/
+
+                /*********************************************************************************************************************************************************************************************************************/
+                /*********************************************************************************************************************************************************************************************************************/
+                /*********************************************************************************************************************************************************************************************************************/
+                /*********************************************************************************************************************************************************************************************************************/
+                
+
+
             return;   ///      WE ARE NOW ABLE TO USE ONLY ONE FUNCTION TO DETERMINE PARENTS AND CHILDREN IN ALL CASES
                     ////       GONNA WORK NOW ON THE PROBABILITIES IN ALL CASES WITH A LOOP, WE GO FROM PARENTHESIS TO PARENTHESIS AND CHECK THE SUMS OF EVERY N-TUPLE WITH N = #PARENTS
                             // PUT THEM ALL IN A VECTOR AND SHOULD BE ABLE TO DO MARGNIALIZATION WITH OLD LOOP FROM THERE
@@ -142,7 +247,7 @@ void translator(vector<string>& group){
 
                semicolonIndeces.push_back(firstParenthesisIndex);
                 for(auto j = next(firstParenthesisIndex); j < lastParenthesisIndex; ++j){
-                    if( *j == ";" ){
+                    if( *j == ";"){
                         semicolonIndeces.push_back(j); // add the index of the semicolon to the vector
                     }
                 }
@@ -327,10 +432,10 @@ int main(){
     streamFile(filename); // read the file and print its content
 
     for(auto group : dividedGroups) { // iterate through the groups
-        cout << "GROUP: ";
+/*        cout << "GROUP: ";
         for( auto i : group ){
             cout << '[' << i << "] "; // print the group
-        }
+        }*/
         cout << endl; // print a new line
         translator(group); // call the translator function to process the group
     }
