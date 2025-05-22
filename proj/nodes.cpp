@@ -72,6 +72,32 @@ vector<int> getParentStateIndices(int counter, const vector<int>& parentIDs, con
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Implementation of the Kahn algorithm for topological sorting
 // It is made to work so that no node will ever appear before its parents
 // therefore the ALREAEDY WRITTEN marginalization function will work

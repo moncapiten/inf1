@@ -1,25 +1,25 @@
 network myTest {
 }
 variable A {
-  type discrete [ 2 ] { H, M, L };
+  type discrete [ 3 ] { H, M, L };
+}
+variable D {
+  type discrete [ 2 ] { H, L}
 }
 variable B {
   type discrete [ 2 ] { H, L };
 }
 variable C {
-  type discrete [ 2 ] { H, L };
-}
-variable D {
-  type discrete [ 2 ] { H, L}
+  type discrete [ 4 ] { H, MH, ML, L };
 }
 probability ( A ) { 
-  table 0.4, 0.6;
+  table 0.2, 0.5, 0.3;
 }
 probability ( B ) {
   table 0.5, 0.5;
 }
 probability ( C ) {
-  table 0.9, 0.1;
+  table 0.37, 0.1, 0.05, 0.48;
 }
 
 
@@ -28,13 +28,28 @@ probability ( D | A, B, C ) {
   (M, L, L) 0.7, 0.3;
   (H, L, L) 0.5, 0.5;
   (L, H, L) 0.1, 0.9;
-  (M, L, L) 0.7, 0.3;
+  (M, H, L) 0.7, 0.3;
   (H, H, L) 0.6, 0.4;
+
+  (L, L, M L) 0.7, 0.3;
+  (M, L, ML) 0.7, 0.3;
+  (H, L, ML) 0.5, 0.5;
+  (L, H, ML) 0.1, 0.9;
+  (M, H, ML) 0.7, 0.3;
+  (H, H, ML) 0.6, 0.4;
+
+  (L, L, MH) 0.35, 0.65;
+  (M, L, MH) 0.7, 0.3;
+  (H, L, MH) 0.11, 0.89;
+  (L, H, MH) 0.39, 0.61;
+  (M, H, MH) 0.7, 0.3;
+  (H, H, MH) 0.98, 0.02;
+
   (L, L, H) 0.35, 0.65;
-  (M, L, L) 0.7, 0.3;
+  (M, L, H) 0.7, 0.3;
   (H, L, H) 0.11, 0.89;
   (L, H, H) 0.39, 0.61;
-  (M, L, L) 0.7, 0.3;
+  (M, H, H) 0.7, 0.3;
   (H, H, H) 0.98, 0.02;
 
 }

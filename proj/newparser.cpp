@@ -27,61 +27,153 @@ vector<vector<string>> dividedGroups; // vector of groups
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+vector<int> reorder(vector<BayesianNode> nodesIndeces){
+    vector<int> swapList;
+    for( auto i:nodesIndeces){
+        for( auto j : i.parents){
+            if( find(swapList.begin(), swapList.end(), j) == swapList.end() ){
+                swapList.push_back(j);
+            }
+
+        }
+        if( find(swapList.begin(), swapList.end(), i.ID) == swapList.end() ){
+            swapList.push_back(i.ID);
+        }
+
+    }
+    return swapList;
+}
+
+
+
+
+vector<int> reorder(vector<int> nodesIndeces){
+    vector<int> swapList;
+    for( auto i:nodesIndeces){
+        for( auto j : nodes[i].parents){
+            if( find(swapList.begin(), swapList.end(), j) == swapList.end() ){
+                swapList.push_back(j);
+            }
+
+        }
+        swapList.push_back(i);
+
+    }
+    return swapList;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void updateVector(vector<int>& parentsStates, vector<int> parentList){
+    bool rollover = false;
+    for( int i = 0; i < parentsStates.size(); i++){
+        
+        if( rollover || i==0 ) parentsStates[i]++;
+
+        rollover = false;
+        if(parentsStates[i] > nodes[parentList[i]].states.size()-1){
+            parentsStates[i] = 0;
+            rollover = true;
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 // marginalization function
 // I still hate you for this Fabio
 
 void marginalize(BayesianNode& node) {
-    cout << "\n\nMarginalizing node: " << node.name << "\tparents:"; // print the name of the node being marginalized
-    for (const auto& parent : node.parents) {
-        cout << " " << nodes[parent].name;
-    }
-    cout << endl;
-
     if (node.parents.empty()) {
         node.pureProb = node.probabilities; // assign the probabilities to the node
         return; // return if the node has no parents
     }
 
     vector<double> sums(node.states.size(), 0.0); // vector to hold the sums of the probabilities
-    int counterToSelectProbs = 0;
+    vector<int> statesOfEachParent(node.parents.size(), 0); // vector to hold the states of each parent
 
     // here is the calculation of marginal probabilities
     for (auto j = node.probabilities.begin(); j < node.probabilities.end(); j += node.states.size()) {
+
         for (auto k = j; k < j + node.states.size(); k++) {
             double toBeAdded0 = *k; // get the first probability
-            cout << *k << " "; // print the probabilities
 
-/*
-            vector<int> parentIndices = getParentStateIndices(counterToSelectProbs, node.parents, nodes);
-            for (int m = 0; m < node.parents.size(); m++) {
-                int parentState = parentIndices[m];
-                toBeAdded0 *= nodes[node.parents[m]].pureProb[parentState];
-            }
-*/
 
-            
-            vector<int> bitVector = toBitVector(counterToSelectProbs, node.parents.size()); // convert the counter to a bit vector
-            reverse(bitVector.begin(), bitVector.end()); // reverse the vector
-            
+
+//            cout << statesOfEachParent << " "; // print the states of each parent
+//            cout << endl;
 
             for (int m = 0; m < node.parents.size(); m++) {
-                cout << nodes[node.parents[m]].name << " "; // print the name of the parent
-                cout << node.parents[m] << " "; // print the ID of the parent
-                cout << nodes[node.parents[m]].pureProb << " "; // print the ID of the parent
-                cout << m << " "; // print the index of the parent
-                cout << bitVector[m] << " "; // print the bit vector
-                cout << nodes[node.parents[m]].pureProb[bitVector[m]] << " "; // print the pure probabilities
-                
-                toBeAdded0 *= nodes[node.parents[m]].pureProb[bitVector[m]]; // multiply the probabilities
+                toBeAdded0 *= nodes[node.parents[m]].pureProb[statesOfEachParent[m]]; // multiply the probabilities
             }
             sums[k - j] += toBeAdded0; // add the probabilities to the sum
         }
-        counterToSelectProbs++;
+        updateVector(statesOfEachParent, node.parents);
     }
 
     node.pureProb = sums; // assign the pure probabilities to the node
     return;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -182,7 +274,7 @@ void translator(vector<string>& group){
                 } else if( *j == "," || *j == "table" ){
                     continue; // continue if the token is a comma
                 } else if (parenDepth == 0){
-                    cout << *j << " "; // print the token if the parenthesis depth is 0
+//                    cout << *j << " "; // print the token if the parenthesis depth is 0
                     nodes[substitutionIndeces[owner]].probabilities.push_back(stod(*j)); // convert the string to double and add it to the vector
                 }
             }
@@ -304,7 +396,7 @@ void streamFile(string filename){
 
 
 int main(){
-    string filename = "cancer.bif"; // file name
+    string filename = "myothertest.bif"; // file name
 
 
     streamFile(filename); // read the file and print its content
@@ -318,15 +410,32 @@ int main(){
         translator(group); // call the translator function to process the group
     }
 
+    vector<int> reorderedList(nodes.size());    // vector to hold the list reordered so that no node ever appears before its parents
+
+    reorderedList = reorder(nodes);
+
+
+    cout << "Original list: ";
+    for( auto i : nodes){
+        cout << i.ID << " "; // print the original list
+    }
+    cout << endl; // print a new line
+
+
+    cout << "Reordered list: ";
+    for( auto i : reorderedList){
+        cout << i << " "; // print the reordered list
+    }
+    cout << endl; // print a new line
 
 
 
-    for( auto& i : nodes ){
-        marginalize(i); // marginalize the nodes
-        cout << endl;
-        cout << i;
-        cout << i.pureProb << endl; // print the pure probabilities
-        cout << endl;
+    for( auto& i : reorderedList ){
+        marginalize(nodes[i]); // marginalize the nodes
+//        cout << endl;
+//        cout << i;
+//        cout << i.pureProb << endl; // print the pure probabilities
+//        cout << endl;
     }
 
     cout << "\n\n\nNETWORK:" << endl << endl; // print the nodes
