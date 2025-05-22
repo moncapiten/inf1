@@ -3,6 +3,7 @@
 #include <vector>
 #include <fstream>
 #include <unordered_map>
+#include <unordered_set>
 #include <windows.h> // for colored text in console
 #include <string>
 #include <algorithm>
@@ -38,42 +39,168 @@ vector<vector<string>> dividedGroups; // vector of groups
 
 
 
-
+/*
 vector<int> reorder(vector<BayesianNode> nodesIndeces){
+    vector<BayesianNode> origin = nodesIndeces;
     vector<int> swapList;
+
+
+    bool toIncrease = false;
+
     for( auto i:nodesIndeces){
         for( auto j : i.parents){
             if( find(swapList.begin(), swapList.end(), j) == swapList.end() ){
                 swapList.push_back(j);
+                toIncrease = true;
             }
 
         }
         if( find(swapList.begin(), swapList.end(), i.ID) == swapList.end() ){
             swapList.push_back(i.ID);
+            origin.erase(origin.begin() + i.ID);
+            cout << swapList << "\t";
         }
 
     }
     return swapList;
-}
+}*/
 
 
 
 
-vector<int> reorder(vector<int> nodesIndeces){
-    vector<int> swapList;
-    for( auto i:nodesIndeces){
-        for( auto j : nodes[i].parents){
-            if( find(swapList.begin(), swapList.end(), j) == swapList.end() ){
-                swapList.push_back(j);
+vector<int> reorder(vector<BayesianNode> nodesIndeces) {
+    vector<BayesianNode> origin = nodesIndeces;
+    vector<int> sortedIDs;
+    unordered_set<int> placed;
+
+    bool progress;
+
+    do {
+        progress = false;
+
+        for (auto it = origin.begin(); it != origin.end(); ) {
+            bool ready = true;
+
+            for (int parent : it->parents) {
+                if (placed.find(parent) == placed.end()) {
+                    ready = false;
+                    break;
+                }
             }
 
+            if (ready) {
+                sortedIDs.push_back(it->ID);
+                placed.insert(it->ID);
+                it = origin.erase(it);
+                progress = true;
+            } else {
+                ++it;
+            }
         }
-        swapList.push_back(i);
 
-    }
+        if (!progress && !origin.empty()) {
+            throw runtime_error("Cycle detected or missing parent nodes.");
+        }
+
+    } while (!origin.empty());
+
+    return sortedIDs;
+}
+
+
+
+/*
+vector<int> reorder(vector<BayesianNode> nodesIndeces){
+    vector<BayesianNode> origin = nodesIndeces;
+    vector<int> swapList;
+
+    int i = 0;
+    bool toIncrease = false;
+
+    cout << endl << endl;
+    cout << origin.size() << endl;
+    cout << swapList.size() << endl;
+    cout << endl << endl;
+
+
+    do{
+        for( auto j : origin[i].parents){
+            if( find(swapList.begin(), swapList.end(), j) == swapList.end() ){
+                toIncrease = true;
+            }
+        }
+
+        if(toIncrease){
+            i++;
+            if (i >= origin.size()){
+                i = 0;
+                toIncrease = false;
+            }
+        } else {
+            swapList.push_back(origin[i].ID);
+            origin.erase(origin.begin() + i);
+            cout << swapList << "\t";
+        }
+
+
+
+
+    }while(origin.size() > 0);
+
     return swapList;
 }
 
+*/
+
+
+
+
+
+
+
+
+/*
+vector<int> reorder(vector<int> nodesIndeces){
+    vector<int> origin = nodesIndeces;
+    vector<int> swapList;
+
+    int i = 0;
+    bool toIncrease = false;
+
+    cout << endl << endl;
+    cout << origin.size() << endl;
+    cout << swapList.size() << endl;
+    cout << endl << endl;
+
+
+    do{
+
+        for( auto j : nodes[origin[i]].parents){
+            if( find(swapList.begin(), swapList.end(), j) == swapList.end() ){
+                toIncrease = true;
+            }
+            else {
+                swapList.push_back(i);
+                origin.erase(origin.begin() + i);
+                cout << swapList << "\t";
+            }
+        }
+
+        if(toIncrease){
+            i++;
+            if (i >= origin.size()){
+                i = 0;
+            }
+        }
+
+
+
+
+    }while(origin.size() > 0);
+
+    return swapList;
+}
+*/
 
 
 
@@ -396,7 +523,7 @@ void streamFile(string filename){
 
 
 int main(){
-    string filename = "myothertest.bif"; // file name
+    string filename = "munin.bif"; // file name
 
 
     streamFile(filename); // read the file and print its content
@@ -405,37 +532,45 @@ int main(){
 /*        cout << "GROUP: ";
         for( auto i : group ){
             cout << '[' << i << "] "; // print the group
-        }*/
-        cout << endl; // print a new line
+        }
+        cout << endl; // print a new line*/
         translator(group); // call the translator function to process the group
     }
 
     vector<int> reorderedList(nodes.size());    // vector to hold the list reordered so that no node ever appears before its parents
 
+
+
+
+//    cout << "Original list: ";
+//    for( auto i : nodes){
+//        cout << i.ID << " "; // print the original list
+//    }
+//    cout << endl; // print a new line
+
     reorderedList = reorder(nodes);
 
+//    cout << "Reordered list: ";
+//    for( auto i : reorderedList){
+//        cout << i << " "; // print the reordered list
+//    }
+//    cout << endl; // print a new line
 
-    cout << "Original list: ";
-    for( auto i : nodes){
-        cout << i.ID << " "; // print the original list
-    }
-    cout << endl; // print a new line
 
-
-    cout << "Reordered list: ";
-    for( auto i : reorderedList){
-        cout << i << " "; // print the reordered list
-    }
-    cout << endl; // print a new line
-
+    //cout << "\n\n\nNETWORK:" << endl << endl; // print the nodes
+    //cout << nodes; // print the nodes using the overloaded operator<<
+    //cout << endl; // print a new line after the nodes
 
 
     for( auto& i : reorderedList ){
+//        cout << "Node: " << nodes[i].name << " " << nodes[i].ID; // print the node
+//        cout << "\tParents: ";
+//        for( auto j : nodes[i].parents){
+//            cout << nodes[j].name << " "; // print the parents
+//        }
+//        cout << endl; // print a new line
         marginalize(nodes[i]); // marginalize the nodes
-//        cout << endl;
-//        cout << i;
-//        cout << i.pureProb << endl; // print the pure probabilities
-//        cout << endl;
+
     }
 
     cout << "\n\n\nNETWORK:" << endl << endl; // print the nodes
@@ -444,8 +579,7 @@ int main(){
 
     cout << "That's all folks!" << endl; // print the end message
 
-//    cout << nodes[ substitutionIndeces["LVH"]].name;
-//    cout << nodes[ 11].name;
+
 
 
     return 0;
