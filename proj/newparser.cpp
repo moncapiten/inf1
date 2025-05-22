@@ -51,13 +51,15 @@ void marginalize(BayesianNode& node) {
             double toBeAdded0 = *k; // get the first probability
             cout << *k << " "; // print the probabilities
 
+/*
             vector<int> parentIndices = getParentStateIndices(counterToSelectProbs, node.parents, nodes);
-
             for (int m = 0; m < node.parents.size(); m++) {
                 int parentState = parentIndices[m];
                 toBeAdded0 *= nodes[node.parents[m]].pureProb[parentState];
             }
-            /*
+*/
+
+            
             vector<int> bitVector = toBitVector(counterToSelectProbs, node.parents.size()); // convert the counter to a bit vector
             reverse(bitVector.begin(), bitVector.end()); // reverse the vector
             
@@ -71,7 +73,7 @@ void marginalize(BayesianNode& node) {
                 cout << nodes[node.parents[m]].pureProb[bitVector[m]] << " "; // print the pure probabilities
                 
                 toBeAdded0 *= nodes[node.parents[m]].pureProb[bitVector[m]]; // multiply the probabilities
-            }*/
+            }
             sums[k - j] += toBeAdded0; // add the probabilities to the sum
         }
         counterToSelectProbs++;
@@ -316,7 +318,9 @@ int main(){
         translator(group); // call the translator function to process the group
     }
 
-    topologicalSort(nodes); // sort the nodes topologically
+
+
+
     for( auto& i : nodes ){
         marginalize(i); // marginalize the nodes
         cout << endl;

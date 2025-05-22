@@ -54,17 +54,15 @@ struct BayesianNode {
 
 vector<int> getParentStateIndices(int counter, const vector<int>& parentIDs, const vector<BayesianNode>& nodes) {
     vector<int> indices;
-    int numParents = parentIDs.size();
-    indices.reserve(numParents);
-    
-    for (int i = 0; i < numParents; ++i) {
+    for (int i = parentIDs.size() - 1; i >= 0; --i) { // Reverse iteration
+        int parentID = parentIDs[i];
         int subsequentStates = 1;
-        for (int j = i + 1; j < numParents; ++j) {
+        for (int j = i + 1; j < parentIDs.size(); ++j) {
             subsequentStates *= nodes[parentIDs[j]].states.size();
         }
-        indices.push_back((counter / subsequentStates) % nodes[parentIDs[i]].states.size());
+        int parentState = (counter / subsequentStates) % nodes[parentID].states.size();
+        indices.insert(indices.begin(), parentState); // Maintain original order
     }
-    
     return indices;
 }
 
@@ -121,6 +119,44 @@ void topologicalSort(vector<BayesianNode>& nodes) {
         throw runtime_error("Cycle detected in graph");
     }
 
+
+
+
+
+
+
+     // 1. FIRST create mapping from ORIGINAL ID to new index
+    unordered_map<int, int> originalIdToNewIndex;
+    for (int i = 0; i < sorted.size(); ++i) {
+        originalIdToNewIndex[sorted[i].ID] = i;  // Key fix: Map original IDs to new positions
+    }
+
+    // 2. Update parents using ORIGINAL IDs
+    for (auto& node : sorted) {
+        vector<int> newParents;
+        for (int origPid : node.parents) {
+            newParents.push_back(originalIdToNewIndex.at(origPid)); // Convert original parent ID to new index
+        }
+        node.parents = newParents;
+    }
+
+    // 3. THEN update node IDs to match their new positions
+    for (int i = 0; i < sorted.size(); ++i) {
+        sorted[i].ID = i; 
+    }
+
+    // 4. Rebuild children relationships using CORRECT new indices
+    for (auto& node : sorted) node.children.clear();
+    for (int childIdx = 0; childIdx < sorted.size(); ++childIdx) {
+        for (int parentNewIdx : sorted[childIdx].parents) {
+            sorted[parentNewIdx].children.push_back(childIdx); 
+        }
+    }
+
+    nodes = move(sorted);
+}
+
+/*
     // Map old ID to new index
     unordered_map<int, int> idToNewIndex;
     for (int i = 0; i < sorted.size(); ++i)
@@ -151,8 +187,9 @@ void topologicalSort(vector<BayesianNode>& nodes) {
     }
 
     nodes = move(sorted);
-}
 
+}
+*/
 
 
 
