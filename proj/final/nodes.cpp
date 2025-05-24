@@ -14,7 +14,10 @@ using namespace std;
 unordered_map<string, int> substitutionIndeces; // map to hold the names of the nodes and their indices
 unordered_map<int, string> substitutionNames; // map to hold the indices of the nodes and their names
 
-
+void updateMaps(string name, int index){
+    substitutionIndeces[name] = index; // add the name to the map with the index of the node
+    substitutionNames[index] = name; // add the index to the map with the name of the node
+}
 
 
 
