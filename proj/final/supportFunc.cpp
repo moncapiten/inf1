@@ -1,24 +1,6 @@
-#include <iostream>
-#include <vector>
-
+#include "supportFunc.hpp"
 
 using namespace std;
-
-
-std::string toString(const std::vector<int>& bits) {
-    std::string result;
-    result.reserve(bits.size());
-    for (int b : bits)
-        result += (b ? '1' : '0');
-    return result;
-}
-
-vector<int> toBitVector(uint64_t value, size_t bitCount) {
-    std::vector<int> bits(bitCount);
-    for (size_t i = 0; i < bitCount; ++i)
-        bits[bitCount - 1 - i] = (value >> i) & 1;
-    return bits;
-}
 
 
 
@@ -41,7 +23,16 @@ std::ostream& operator<<(std::ostream& os, const std::vector<int>& vec) {
 }
 
 
+ostream& operator<<(ostream& os, const vector<std::string>& vec) {
+    os << "[";
+    for (size_t i = 0; i < vec.size(); ++i) {
+        os << vec[i];
+        if (i + 1 < vec.size()) os << ", ";
+    }
+    return os << "]";
+}
 
+/*
 template <typename T>
 class Stack {
     private:
@@ -112,3 +103,4 @@ bool checkParenthesis(const vector<string>& v){
 
     return stack.empty();
 }
+*/

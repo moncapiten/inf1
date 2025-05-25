@@ -22,11 +22,16 @@
 #include "marginalizer.hpp"
 #include "marginalizer.cpp"
 
+#include "nodes.hpp"
+#include "supportFunc.hpp"
+
+
+
 using namespace std;
 
 
 
-vector<BayesianNode> nodes; // vector of Bayesian nodes
+//vector<BayesianNode> nodes; // vector of Bayesian nodes
 // there is substitutionIndeces and substitutionNames in nodes.cpp, but they are used but not declared here
 
 
@@ -43,7 +48,7 @@ vector<BayesianNode> nodes; // vector of Bayesian nodes
 
 
 int main(){
-    string filename = "../munin.bif"; // file name
+    string filename = "../mytest.bif"; // file name
 
 
     auto startParsing = chrono::high_resolution_clock::now(); // start the timer
@@ -54,21 +59,22 @@ int main(){
     parser.translate();
     auto endTranslation = chrono::high_resolution_clock::now(); // end the timer for translation
 
-    nodes = parser.getNodes();
-    substitutionIndeces = parser.getIndecesArchive();
-    substitutionNames = parser.getNamesArchive();
+    BayesianNetwork network = parser.getNetwork(); // get the Bayesian network from the parser
+//    nodes = parser.getNodes();
+//    substitutionIndeces = parser.getIndecesArchive();
+//    substitutionNames = parser.getNamesArchive();
 
 
     
 
     auto startMarginalization = chrono::high_resolution_clock::now(); // start the timer
     Marginalizer marg; // create a new marginalizer object
-    nodes = marg.marginalize(nodes); // marginalize the nodes
+    network = marg.marginalize(network); // marginalize the nodes
     auto endMarginalization = chrono::high_resolution_clock::now(); // end the timer
 
     auto startPrinting = chrono::high_resolution_clock::now(); // start the timer for printing
     cout << "\n\n\nNETWORK:" << endl << endl; // print the nodes
-    cout << nodes; // print the nodes using the overloaded operator<<
+    cout << network; // print the nodes using the overloaded operator<<
     cout << endl; // print a new line after the nodes
     auto endPrinting = chrono::high_resolution_clock::now(); // end the timer for printing
 

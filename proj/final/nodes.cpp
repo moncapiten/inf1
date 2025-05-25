@@ -1,9 +1,6 @@
-#include <iostream>
-#include <vector>
-#include <queue>
-#include <iterator>
-#include <string>
-#include <unordered_map>
+#include "nodes.hpp"
+
+
 //#include "supportFunc.hpp"
 //#include "supportFunc.cpp"
 
@@ -11,45 +8,21 @@ using namespace std;
 
 
 
-unordered_map<string, int> substitutionIndeces; // map to hold the names of the nodes and their indices
-unordered_map<int, string> substitutionNames; // map to hold the indices of the nodes and their names
+//unordered_map<string, int> substitutionIndeces; // map to hold the names of the nodes and their indices
+//unordered_map<int, string> substitutionNames; // map to hold the indices of the nodes and their names
+
+
+
+
+
+
+
+
 
 
 
 
 /*
-class BayesianNetwork {
-    public:
-        BayesianNetwork() {
-            // Constructor for the BayesianNetwork class
-        }
-
-        void addNode(const BayesianNode& node) {
-            nodes.push_back(node); // add the node to the vector of nodes
-            updateMaps(node.name, node.ID); // update the maps with the name and index of the node
-        }
-
-        vector<BayesianNode> getNodes() const {
-            return nodes; // return the vector of nodes
-        }
-
-        void updateMaps(string name, int index){
-            substitutionIndeces[name] = index; // add the name to the map with the index of the node
-            substitutionNames[index] = name; // add the index to the map with the name of the node
-        }
-
-    private:
-        vector<BayesianNode> nodes; // vector to hold the Bayesian nodes
-        unordered_map<string, int> substitutionIndeces; // map to hold the names of the nodes and their indices
-        unordered_map<int, string> substitutionNames; // map to hold the indices of the nodes and their names
-};
-*/
-
-
-
-
-
-
 struct BayesianNode {
     string name; // name of the node
     int ID; // ID of the node
@@ -73,6 +46,77 @@ struct BayesianNode {
     }
 
 };
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+class BayesianNetwork {
+    public:
+        BayesianNetwork() {
+            // Constructor for the BayesianNetwork class
+        }
+*/
+        void BayesianNetwork::addNode(const BayesianNode& node) {
+            nodes.push_back(node); // add the node to the vector of nodes
+            updateMaps(node.name, node.ID); // update the maps with the name and index of the node
+        }
+
+        BayesianNode& BayesianNetwork::getNode_ID(int ID) {
+            if (ID < 0 || ID >= nodes.size()) {
+                throw out_of_range("Node ID is out of range"); // throw an error if the ID is out of range
+            }
+            return nodes[ID]; // return the node with the given ID
+        }
+
+        BayesianNode& BayesianNetwork::getNode_name(const string& name) {
+            auto it = substitutionIndeces.find(name); // find the index of the node with the given name
+            if (it == substitutionIndeces.end()) {
+                throw out_of_range("Node name not found"); // throw an error if the name is not found
+            }
+            return nodes[it->second]; // return the node with the given name
+        }
+
+        int BayesianNetwork::size() const {
+            return nodes.size(); // return the size of the vector of nodes
+        }
+
+        vector<BayesianNode> BayesianNetwork::getNodes() const {
+            return nodes; // return the vector of nodes
+        }
+
+        void BayesianNetwork::updateMaps(string name, int index) {
+            substitutionIndeces[name] = index; // add the name to the map with the index of the node
+            substitutionNames[index] = name; // add the index to the map with the name of the node
+        }
+/*
+    private:
+        vector<BayesianNode> nodes; // vector to hold the Bayesian nodes
+        unordered_map<string, int> substitutionIndeces; // map to hold the names of the nodes and their indices
+        unordered_map<int, string> substitutionNames; // map to hold the indices of the nodes and their names
+};
+*/
+
 
 
 
@@ -119,12 +163,12 @@ ostream& operator<<(ostream& os, const BayesianNode& node) {
     os << "Node: " << node.name << " alias " << node.ID << '\n';
 
     os << "  Parents: ";
-    for (const auto& p : node.parents) os << substitutionNames[p] << ' ';
+    for (const auto& p : node.parents) os << p; //substitutionNames[p] << ' ';
 //    for (const auto& p : node.parents) os << p << ' ';
     os << '\n';
 
     os << "  Children: ";
-    for (const auto& c : node.children) os << substitutionNames[c] << ' ';
+    for (const auto& c : node.children) os << c; //substitutionNames[c] << ' ';
 //    for (const auto& c : node.children) os << c << ' ';
     os << '\n';
 
@@ -149,8 +193,8 @@ ostream& operator<<(ostream& os, const BayesianNode& node) {
 
 
 // Overload for a vector of nodes
-ostream& operator<<(ostream& os, const vector<BayesianNode>& nodes) {
-    for (const auto& node : nodes) {
+ostream& operator<<(ostream& os, const BayesianNetwork& network) {
+    for (const auto& node : network.getNodes()) {
         os << node << '\n';
     }
     return os;

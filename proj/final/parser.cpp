@@ -1,3 +1,5 @@
+#include "parser.hpp"
+/*
 #include <iostream>
 #include <vector>
 #include <string>
@@ -15,20 +17,14 @@
 
 #include "nodes.hpp"
 #include "nodes.cpp"
+*/
 
 
 using namespace std;
 
 
 
-ostream& operator<<(ostream& os, const vector<std::string>& vec) {
-    os << "[";
-    for (size_t i = 0; i < vec.size(); ++i) {
-        os << vec[i];
-        if (i + 1 < vec.size()) os << ", ";
-    }
-    return os << "]";
-}
+
 
 
 
@@ -46,7 +42,10 @@ public:
             translator(group); // call the translator function to process the group
         }
     }
-
+    BayesianNetwork& getNetwork() {
+        return network; // return the Bayesian network object
+    }
+/*
     vector<BayesianNode> getNodes() {
         return nodes; // return the nodes
     }
@@ -57,14 +56,15 @@ public:
     unordered_map<int, string> getNamesArchive() {
         return namesArchive; // return the names archive
     }
-
+*/
 
 private:
     string filename; // file name
     vector<vector<string>> dividedGroups; // vector of groups
-    vector<BayesianNode> nodes; // vector of Bayesian nodes
-    unordered_map<string, int> indecesArchive; // map to hold the names of the nodes and their indices
-    unordered_map<int, string> namesArchive; // map to hold the indices of the nodes and their names
+//    vector<BayesianNode> nodes; // vector of Bayesian nodes
+    BayesianNetwork network; // Bayesian network object to hold the nodes
+//    unordered_map<string, int> indecesArchive; // map to hold the names of the nodes and their indices
+//    unordered_map<int, string> namesArchive; // map to hold the indices of the nodes and their names
 
 
 
@@ -136,10 +136,10 @@ private:
 
 
 
-    void updateMaps(string name, int index){
+/*    void updateMaps(string name, int index){
         indecesArchive[name] = index; // add the name to the map with the index of the node
         namesArchive[index] = name; // add the index to the map with the name of the node
-    }
+    }*/
 
 
 
@@ -164,10 +164,13 @@ private:
             if( *i == "variable" ){
                 string name = *next(i); // get the name of the variable
 
-                updateMaps(name, nodes.size()); // update the maps with the name and index of the node
+//                network.updateMaps(name, network.size()); // update the maps with the name and index of the node
 
-                nodes.push_back(BayesianNode(name)); // create a new Bayesian node with the name
-                nodes[indecesArchive[name]].ID = indecesArchive[name]; // set the state of the node to false
+//                nodes.push_back(BayesianNode(name)); // create a new Bayesian node with the name
+//                nodes[indecesArchive[name]].ID = indecesArchive[name]; // set the state of the node to false
+                BayesianNode node(name); // create a new Bayesian node with the name
+                node.ID = network.size(); // set the ID of the node to the size of the network
+                network.addNode(node); // add the node to the network
 
                 
                 
@@ -189,7 +192,8 @@ private:
                                 states.push_back(*k); // add the state to the vector
                             }
                         }
-                        nodes[indecesArchive[group[1]]].states = states; // assign the states to the node
+                        network.getNode_name(name).states = states; // assign the states to the node
+//                        nodes[indecesArchive[group[1]]].states = states; // assign the states to the node
                         return;
 
                     }
@@ -221,8 +225,10 @@ private:
                         if( owner == "" ){
                             owner = *j; // get the owner of the node
                         } else {
-                            nodes[indecesArchive[owner]].parents.push_back(indecesArchive[*j]); // add the parent to the node
-                            nodes[indecesArchive[*j]].children.push_back(indecesArchive[owner]); // add the child to the parent
+                            network.getNode_name(owner).parents.push_back(network.getNode_name(*j).ID); // add the parent to the node
+                            network.getNode_name(*j).children.push_back(network.getNode_name(owner).ID); // add the child to the parent
+//                            nodes[indecesArchive[owner]].parents.push_back(indecesArchive[*j]); // add the parent to the node
+//                            nodes[indecesArchive[*j]].children.push_back(indecesArchive[owner]); // add the child to the parent
                         }
                     }
                 }
@@ -247,14 +253,20 @@ private:
                     } else if( *j == "," || *j == "table" ){
                         continue; // continue if the token is a comma
                     } else if (parenDepth == 0){
-                        nodes[indecesArchive[owner]].probabilities.push_back(stod(*j)); // convert the string to double and add it to the vector
+                        network.getNode_name(owner).probabilities.push_back(stod(*j)); // convert the string to double and add it to the vector
+//                        nodes[indecesArchive[owner]].probabilities.push_back(stod(*j)); // convert the string to double and add it to the vector
                     }
                 }
 
 
 
-                if( nodes[indecesArchive[owner]].parents.size() == 0 ){
-                    nodes[indecesArchive[owner]].pureProb = nodes[indecesArchive[owner]].probabilities; // assign the probabilities to the node
+
+//                if( nodes[indecesArchive[owner]].parents.size() == 0 ){
+//                    nodes[indecesArchive[owner]].pureProb = nodes[indecesArchive[owner]].probabilities; // assign the probabilities to the node
+//                    return; // return if the node has no parents
+//                }
+                if( network.getNode_name(owner).parents.size() == 0 ){
+                    network.getNode_name(owner).pureProb = network.getNode_name(owner).probabilities; // assign the probabilities to the node
                     return; // return if the node has no parents
                 }
                 return;
