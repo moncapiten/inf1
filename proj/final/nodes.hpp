@@ -42,9 +42,6 @@ struct BayesianNode {
 
 
 
-
-
-
 class BayesianNetwork {
     public:
         BayesianNetwork() {
@@ -72,7 +69,7 @@ class BayesianNetwork {
 
 
 
-vector<int> getParentStateIndices(int counter, const vector<int>& parentIDs, const vector<BayesianNode>& nodes);
+//vector<int> getParentStateIndices(int counter, const vector<int>& parentIDs, const vector<BayesianNode>& nodes);
 
 
 ostream& operator<<(ostream& os, const BayesianNode& node);

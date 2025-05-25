@@ -14,22 +14,11 @@
 #include <stdexcept>
 
 #include "supportFunc.hpp"
-//#include "supportFunc.cpp"
 
 #include "nodes.hpp"
-//#include "nodes.cpp"
+
 
 using namespace std;
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -38,10 +27,13 @@ class Parser {
 public:
     Parser() {}
 
+    // parse the input file
     void parse(const string& input);
 
+    // translate from raw groups to Bayesian network nodes
     void translate();
 
+    // outputs the Bayesian network object
     BayesianNetwork& getNetwork();
 
 private:

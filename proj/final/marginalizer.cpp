@@ -2,18 +2,23 @@
 
 
 
-
+// Just all working together, nothing special here
 BayesianNetwork& Marginalizer::marginalize(BayesianNetwork& inputNetwork) {
     outputNetwork = inputNetwork; // assign the input network to the output network
-    listInWorkingOrder = reorder(outputNetwork.getNodes()); // reorder the nodes
+    listInWorkingOrder = reorder(outputNetwork.getNodes()); // reorder the nodes so that no node appears before its parents
 
     for(auto& i : listInWorkingOrder) {
         marginalizeNode(outputNetwork.getNode_ID(i)); // marginalize the nodes
-//                cout << outputNetwork.getNode_ID(i) << endl; // print the node after marginalization
     }
 
     return outputNetwork; // return the modified network
 }
+
+// reordering function
+// topological sorting - O(n^2) worst case, O(n) best case
+// could be improved with Kahn Algorithm, but seems to work ok
+// also O(n) spacially per each origin, sortedID and placed so total O(n)
+// I still hate you for this Fabio
 vector<int> Marginalizer::reorder(vector<BayesianNode> nodesIndeces) {
     vector<BayesianNode> origin = nodesIndeces;
     vector<int> sortedIDs;
@@ -54,7 +59,8 @@ vector<int> Marginalizer::reorder(vector<BayesianNode> nodesIndeces) {
 }
 
 
-
+// updates the mask of parent's states, used as a vector
+// it's basically mirrored binary counting
 void Marginalizer::updateVector(vector<int>& statesMask, const vector<int>& parentList){
     bool rollover = false;
     for( int i = 0; i < statesMask.size(); i++){
@@ -76,7 +82,6 @@ void Marginalizer::updateVector(vector<int>& statesMask, const vector<int>& pare
 
 
 // marginalization function
-// I still hate you for this Fabio
 void Marginalizer::marginalizeNode(BayesianNode& node) {
 
     if (node.parents.empty()) {
@@ -88,24 +93,26 @@ void Marginalizer::marginalizeNode(BayesianNode& node) {
     vector<int> parentsStatesMask(node.parents.size(), 0); // vector to hold the states of each parent
 
     // here is the calculation of marginal probabilities
+    // every node gets iterated over its states and every entry in the cpt gets multipied
+    // by the probabilities of its parents, then summed up
     for (auto j = node.probabilities.begin(); j < node.probabilities.end(); j += node.states.size()) {
 
         for (auto k = j; k < j + node.states.size(); k++) {
             double toBeAdded0 = *k; // get the first probability
             for (int m = 0; m < node.parents.size(); m++) {
-//                        cout << "Parent: " << outputNetwork.getNode_ID(node.parents[m]).name << " State: " << parentsStatesMask[m] << endl; // print the parent and its state
                 toBeAdded0 *= outputNetwork.getNode_ID(node.parents[m]).pureProb[parentsStatesMask[m]]; // multiply the probabilities
             }
             sums[k - j] += toBeAdded0; // add the probabilities to the sum
         }
-
         updateVector(parentsStatesMask, node.parents);
+
     }
 
+    // test to see if the probs sum to 1 - there's leeway for floating point errors
     double testSum = accumulate(sums.begin(), sums.end(), 0.0); // calculate the sum of the probabilities
-//            if( abs(testSum - 1.0) > 1e-8 ){
-//                throw runtime_error("The sum of the probabilities is not equal to 1, something went wrong!");
-//            }
+    if( abs(testSum - 1.0) > 1e-8 ){
+        throw runtime_error("The sum of the probabilities is not equal to 1, something went wrong!");
+    }
 
     node.pureProb = sums; // assign the pure probabilities to the node
 

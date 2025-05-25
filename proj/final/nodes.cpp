@@ -46,7 +46,7 @@ void BayesianNetwork::updateMaps(string name, int index) {
 
 
 
-
+/*
 vector<int> getParentStateIndices(int counter, const vector<int>& parentIDs, const vector<BayesianNode>& nodes) {
     vector<int> indices;
     for (int i = parentIDs.size() - 1; i >= 0; --i) { // Reverse iteration
@@ -60,7 +60,7 @@ vector<int> getParentStateIndices(int counter, const vector<int>& parentIDs, con
     }
     return indices;
 }
-
+*/
 
 
 

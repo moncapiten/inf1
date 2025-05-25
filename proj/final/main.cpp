@@ -1,31 +1,9 @@
-#include <iostream>
-#include <iterator>
-#include <vector>
-#include <fstream>
-#include <unordered_map>
-#include <unordered_set>
-#include <windows.h> // for colored text in console
-#include <string>
-#include <algorithm>
-#include <cctype>
-#include <bitset>
-#include <stdexcept>
-//#include <functional>
-#include <numeric>
-
 #include <chrono>
 
-
 #include "parser.hpp"
-//#include "parser.cpp"
-
-#include "marginalizer.hpp"
-//#include "marginalizer.cpp"
-
 #include "nodes.hpp"
 #include "supportFunc.hpp"
-
-
+#include "marginalizer.hpp"
 
 using namespace std;
 
@@ -49,10 +27,6 @@ int main(){
     auto endTranslation = chrono::high_resolution_clock::now(); // end the timer for translation
 
     BayesianNetwork network = parser.getNetwork(); // get the Bayesian network from the parser
-//    nodes = parser.getNodes();
-//    substitutionIndeces = parser.getIndecesArchive();
-//    substitutionNames = parser.getNamesArchive();
-
 
     
 

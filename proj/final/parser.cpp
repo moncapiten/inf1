@@ -1,34 +1,9 @@
 #include "parser.hpp"
-/*
-#include <iostream>
-#include <vector>
-#include <string>
-#include <algorithm>
-#include <cctype>
-#include <unordered_map>
-#include <unordered_set>
-#include <queue>
-#include <iterator>
-#include <fstream>
-#include <stdexcept>
-
-#include "supportFunc.hpp"
-#include "supportFunc.cpp"
-
-#include "nodes.hpp"
-#include "nodes.cpp"
-*/
-
 
 using namespace std;
 
 
-
-
-
-
-
-
+// Just functions call, from public to privaate, nothing special
 
 void Parser::parse(const string& input) {
     filename = input; // set the filename to the input
@@ -123,10 +98,6 @@ void Parser::translator(vector<string>& group){
         if( *i == "variable" ){
             string name = *next(i); // get the name of the variable
 
-//                network.updateMaps(name, network.size()); // update the maps with the name and index of the node
-
-//                nodes.push_back(BayesianNode(name)); // create a new Bayesian node with the name
-//                nodes[indecesArchive[name]].ID = indecesArchive[name]; // set the state of the node to false
             BayesianNode node(name); // create a new Bayesian node with the name
             node.ID = network.size(); // set the ID of the node to the size of the network
             network.addNode(node); // add the node to the network
