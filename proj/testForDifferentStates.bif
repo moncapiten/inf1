@@ -1,0 +1,38 @@
+network myTest {
+}
+variable A {
+  type discrete [ 3 ] { H, M, L };
+}
+variable C {
+  type discrete [ 2 ] { H, L}
+}
+variable B {
+  type discrete [ 4 ] { H, MH, ML, L };
+}
+probability ( A ) { 
+  table 0.8, 0.1, 0.1;
+}
+probability ( B ) {
+  table 0.9, 0.05, 0.02, 0.03;
+}
+
+
+probability ( C | A, B ) {
+  (L, L) 0.1, 0.9;
+  (M, L) 0.3, 0.7;
+  (H, L) 0.05, 0.95;
+
+  (L, ML) 0.3, 0.7;
+  (M, ML) 0.6, 0.4;
+  (H, ML) 0.5, 0.5;
+
+  (L, MH) 0.6, 0.4;
+  (M, MH) 0.7, 0.3;
+  (H, MH) 0.2, 0.8;
+
+  (L, H) 0.34, 0.66;
+  (M, H) 0.001, 0.999;
+  (H, H) 0.82, 0.18;
+
+}
+

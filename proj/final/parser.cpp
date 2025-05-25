@@ -72,7 +72,7 @@ private:
 
     // fileStreamer, creates from the filename it reads the file and saves it to a string
     // it then calls the tokenizer to process the string into tokens
-    void streamer(string filename){
+    void streamer(const string& filename){
         ifstream file(filename);
         string line;
 
@@ -120,7 +120,7 @@ private:
 
     // grouper, it groups tokens into logical groups
     // it also eliminates empty tokens
-    void grouper( vector<vector<string>>& groups, string token){
+    void grouper( vector<vector<string>>& groups, const string& token){
         if( token == "" ){
             return; // return if the token is empty
         }
