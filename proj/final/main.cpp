@@ -20,7 +20,7 @@
 #include "parser.cpp"
 
 #include "marginalizer.hpp"
-#include "marginalizer.cpp"
+//#include "marginalizer.cpp"
 
 #include "nodes.hpp"
 #include "supportFunc.hpp"
@@ -31,24 +31,12 @@ using namespace std;
 
 
 
-//vector<BayesianNode> nodes; // vector of Bayesian nodes
-// there is substitutionIndeces and substitutionNames in nodes.cpp, but they are used but not declared here
-
-
-
-
-
-
-
-
-
-
 
 
 
 
 int main(){
-    string filename = "../mytest.bif"; // file name
+    string filename = "../cancer.bif"; // file name
 
 
     auto startParsing = chrono::high_resolution_clock::now(); // start the timer
