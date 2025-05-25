@@ -1,121 +1,43 @@
 #include "nodes.hpp"
 
-
-//#include "supportFunc.hpp"
-//#include "supportFunc.cpp"
-
 using namespace std;
 
 
 
-//unordered_map<string, int> substitutionIndeces; // map to hold the names of the nodes and their indices
-//unordered_map<int, string> substitutionNames; // map to hold the indices of the nodes and their names
 
+void BayesianNetwork::addNode(const BayesianNode& node) {
+    nodes.push_back(node); // add the node to the vector of nodes
+    updateMaps(node.name, node.ID); // update the maps with the name and index of the node
+}
 
-
-
-
-
-
-
-
-
-
-
-/*
-struct BayesianNode {
-    string name; // name of the node
-    int ID; // ID of the node
-    vector<int> parents; // parents of the node
-    vector<int> children; // children of the node
-    vector<string> states; // states of the node
-    vector<double> probabilities; // probabilities of the node
-    vector<double> pureProb;
-    bool state;
-
-    BayesianNode(string n, vector<int> p, vector<int> c, vector<string> s, vector<double> prob) {
-        name = n; // initialize the name of the node
-        parents = p; // initialize the parents of the node
-        children = c; // initialize the children of the node
-        states = s; // initialize the states of the node
-        probabilities = prob; // initialize the probabilities of the node
+BayesianNode& BayesianNetwork::getNode_ID(int ID) {
+    if (ID < 0 || ID >= nodes.size()) {
+        throw out_of_range("Node ID is out of range"); // throw an error if the ID is out of range
     }
+    return nodes[ID]; // return the node with the given ID
+}
 
-    BayesianNode(string n) {
-        name = n; // initialize the name of the node
+BayesianNode& BayesianNetwork::getNode_name(const string& name) {
+    auto it = substitutionIndeces.find(name); // find the index of the node with the given name
+    if (it == substitutionIndeces.end()) {
+        throw out_of_range("Node name not found"); // throw an error if the name is not found
     }
+    return nodes[it->second]; // return the node with the given name
+}
 
-};
-*/
+int BayesianNetwork::size() const {
+    return nodes.size(); // return the size of the vector of nodes
+}
 
+vector<BayesianNode> BayesianNetwork::getNodes() const {
+    return nodes; // return the vector of nodes
+}
 
+void BayesianNetwork::updateMaps(string name, int index) {
+    substitutionIndeces[name] = index; // add the name to the map with the index of the node
+    substitutionNames[index] = name; // add the index to the map with the name of the node
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-class BayesianNetwork {
-    public:
-        BayesianNetwork() {
-            // Constructor for the BayesianNetwork class
-        }
-*/
-        void BayesianNetwork::addNode(const BayesianNode& node) {
-            nodes.push_back(node); // add the node to the vector of nodes
-            updateMaps(node.name, node.ID); // update the maps with the name and index of the node
-        }
-
-        BayesianNode& BayesianNetwork::getNode_ID(int ID) {
-            if (ID < 0 || ID >= nodes.size()) {
-                throw out_of_range("Node ID is out of range"); // throw an error if the ID is out of range
-            }
-            return nodes[ID]; // return the node with the given ID
-        }
-
-        BayesianNode& BayesianNetwork::getNode_name(const string& name) {
-            auto it = substitutionIndeces.find(name); // find the index of the node with the given name
-            if (it == substitutionIndeces.end()) {
-                throw out_of_range("Node name not found"); // throw an error if the name is not found
-            }
-            return nodes[it->second]; // return the node with the given name
-        }
-
-        int BayesianNetwork::size() const {
-            return nodes.size(); // return the size of the vector of nodes
-        }
-
-        vector<BayesianNode> BayesianNetwork::getNodes() const {
-            return nodes; // return the vector of nodes
-        }
-
-        void BayesianNetwork::updateMaps(string name, int index) {
-            substitutionIndeces[name] = index; // add the name to the map with the index of the node
-            substitutionNames[index] = name; // add the index to the map with the name of the node
-        }
-/*
-    private:
-        vector<BayesianNode> nodes; // vector to hold the Bayesian nodes
-        unordered_map<string, int> substitutionIndeces; // map to hold the names of the nodes and their indices
-        unordered_map<int, string> substitutionNames; // map to hold the indices of the nodes and their names
-};
-*/
 
 
 
@@ -138,18 +60,6 @@ vector<int> getParentStateIndices(int counter, const vector<int>& parentIDs, con
     }
     return indices;
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

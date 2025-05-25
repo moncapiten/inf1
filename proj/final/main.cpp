@@ -17,7 +17,7 @@
 
 
 #include "parser.hpp"
-#include "parser.cpp"
+//#include "parser.cpp"
 
 #include "marginalizer.hpp"
 //#include "marginalizer.cpp"
@@ -40,7 +40,8 @@ int main(){
 
 
     auto startParsing = chrono::high_resolution_clock::now(); // start the timer
-    Parser parser(filename); // create a new parser object
+    Parser parser; // create a new parser object
+    parser.parse(filename); // parse the file using the parser object
     auto endParsing = chrono::high_resolution_clock::now(); // end the timer
 
     auto startTranslation = chrono::high_resolution_clock::now(); // start the timer for translation

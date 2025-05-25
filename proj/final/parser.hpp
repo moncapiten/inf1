@@ -34,6 +34,36 @@ using namespace std;
 
 
 
+class Parser {
+public:
+    Parser() {}
+
+    void parse(const string& input);
+
+    void translate();
+
+    BayesianNetwork& getNetwork();
+
+private:
+    string filename; // file name
+    vector<vector<string>> dividedGroups; // vector of groups
+    BayesianNetwork network; // Bayesian network object to hold the nodes
+
+    // fileStreamer, creates from the filename it reads the file and saves it to a string
+    void streamer(const string& filename);
+
+    // tokenizer, takes the line and splits it into tokens
+    void tokenizer(string line);
+
+    // grouper, it groups tokens into logical groups
+    void grouper( vector<vector<string>>& groups, const string& token);
+
+    // translator, it takes the groups and translates them into Bayesian network nodes
+    void translator(vector<string>& group);
+
+};
+
+
 
 
 
