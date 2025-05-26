@@ -31,7 +31,6 @@ ostream& operator<<(ostream& os, const vector<std::string>& vec) {
     }
     return os << "]";
 }
-
 /*
 template <typename T>
 class Stack {

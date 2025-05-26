@@ -13,6 +13,8 @@
 #include <fstream>
 #include <stdexcept>
 
+#include <array>
+
 #include "supportFunc.hpp"
 
 #include "nodes.hpp"
@@ -43,6 +45,9 @@ private:
 
     // fileStreamer, creates from the filename it reads the file and saves it to a string
     void streamer(const string& filename);
+
+    // helper function to the tokenizer, checks if the character is a valid token character
+    bool isTokenChar(char c);
 
     // tokenizer, takes the line and splits it into tokens
     void tokenizer(string line);

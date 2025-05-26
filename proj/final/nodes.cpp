@@ -43,31 +43,6 @@ void BayesianNetwork::updateMaps(string name, int index) {
 
 
 
-
-
-
-/*
-vector<int> getParentStateIndices(int counter, const vector<int>& parentIDs, const vector<BayesianNode>& nodes) {
-    vector<int> indices;
-    for (int i = parentIDs.size() - 1; i >= 0; --i) { // Reverse iteration
-        int parentID = parentIDs[i];
-        int subsequentStates = 1;
-        for (int j = i + 1; j < parentIDs.size(); ++j) {
-            subsequentStates *= nodes[parentIDs[j]].states.size();
-        }
-        int parentState = (counter / subsequentStates) % nodes[parentID].states.size();
-        indices.insert(indices.begin(), parentState); // Maintain original order
-    }
-    return indices;
-}
-*/
-
-
-
-
-
-
-
 // Overload for a single node
 ostream& operator<<(ostream& os, const BayesianNode& node) {
     os << "Node: " << node.name << " alias " << node.ID << '\n';

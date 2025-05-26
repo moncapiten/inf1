@@ -19,9 +19,6 @@ BayesianNetwork& Parser::getNetwork() {
     return network; // return the Bayesian network object
 }
 
-
-
-
 // fileStreamer, creates from the filename it reads the file and saves it to a string
 // it then calls the tokenizer to process the string into tokens
 void Parser::streamer(const string& filename){
@@ -40,6 +37,26 @@ void Parser::streamer(const string& filename){
 }
 
 
+
+bool Parser::isTokenChar(char c) {
+    static const array<bool, 256> tokenTable = [] {
+        array<bool, 256> table{};
+        for (char ch = 'a'; ch <= 'z'; ++ch) table[static_cast<unsigned char>(ch)] = true;
+        for (char ch = 'A'; ch <= 'Z'; ++ch) table[static_cast<unsigned char>(ch)] = true;
+        for (char ch = '0'; ch <= '9'; ++ch) table[static_cast<unsigned char>(ch)] = true;
+
+        const char extras[] = "_-/:+=<>!?&^%#@.";
+        for (char ch : extras) table[static_cast<unsigned char>(ch)] = true;
+
+        return table;
+    }();
+    return tokenTable[static_cast<unsigned char>(c)];
+}
+
+
+
+
+
 // tokenizer, takes the line and splits it into tokens
 // afterwards it calls the grouper to group together logic groups
 void Parser::tokenizer(string line) {
@@ -47,7 +64,8 @@ void Parser::tokenizer(string line) {
     for (size_t i = 0; i < line.size(); ++i) {
         char c = line[i];
 
-        if (isalpha(c) || isdigit(c) || c == '_' || c == '-' || c == '/' || c == ':' || c == '+' || c == '=' || c == '<' || c == '>' || c == '!' || c == '?' || c == '&' || c == '^' || c == '%' || c == '#' || c == '@' || c == '.') { 
+        if(isTokenChar(c)){
+//        if (isalpha(c) || isdigit(c) || c == '_' || c == '-' || c == '/' || c == ':' || c == '+' || c == '=' || c == '<' || c == '>' || c == '!' || c == '?' || c == '&' || c == '^' || c == '%' || c == '#' || c == '@' || c == '.') { 
             token += c;
         } else {
             if (!token.empty()) {
