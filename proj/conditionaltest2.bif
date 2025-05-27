@@ -1,0 +1,24 @@
+network conditionalTes2 {
+}
+variable A {
+  type discrete [ 2 ] { L, H };
+}
+variable B {
+  type discrete [ 2 ] { L, H };
+}
+variable C {
+  type discrete [ 2 ] { L, H };
+}
+
+probability ( A ) { 
+  table 0.1, 0.9;
+}
+probability ( B | A, C) {
+  (L, L) 0.2, 0.8;
+  (H, L) 0.65, 0.35;
+  (L, H) 0.01, 0.99;
+  (H, H) 0.21, 0.79;
+}
+probability( C ){
+    table 0.7, 0.3;
+}

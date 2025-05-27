@@ -65,7 +65,6 @@ void Parser::tokenizer(string line) {
         char c = line[i];
 
         if(isTokenChar(c)){
-//        if (isalpha(c) || isdigit(c) || c == '_' || c == '-' || c == '/' || c == ':' || c == '+' || c == '=' || c == '<' || c == '>' || c == '!' || c == '?' || c == '&' || c == '^' || c == '%' || c == '#' || c == '@' || c == '.') { 
             token += c;
         } else {
             if (!token.empty()) {

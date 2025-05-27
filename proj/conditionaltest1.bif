@@ -1,0 +1,16 @@
+network conditionalTest {
+}
+variable A {
+  type discrete [ 2 ] { L, M, H };
+}
+variable B {
+  type discrete [ 2 ] { n, m, y };
+}
+probability ( A ) { 
+  table 0.2, 0.8;
+}
+probability ( B | A ) {
+  (L) 0.1, 0.6, 0.3;
+  (M) 0.5, 0, 0.5;
+  (H) 0.25, 0.35, 0.4;
+}

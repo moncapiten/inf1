@@ -12,7 +12,6 @@ using namespace std;
 
 
 
-/*
 double conditionalProbs(BayesianNode A, BayesianNode B, string stateA = "", string stateB = ""){
     double result;
 
@@ -21,23 +20,30 @@ double conditionalProbs(BayesianNode A, BayesianNode B, string stateA = "", stri
         return A.pureProb[index];
     }
 
-    if( find(A.parents.begin(), A.parents.end(), B.ID) != A.parents.end() ){
-        auto parentIndex = find(A.parents.begin(), A.parents.end(), B.ID) - A.parents.begin();
+    if( find(A.parents.begin(), A.parents.end(), B.ID) != A.parents.end() && A.parents.size() == 1 ){
+
+
         auto AstateIndex = find(A.states.begin(), A.states.end(), stateA) - A.states.begin();
         auto BstateIndex = find(B.states.begin(), B.states.end(), stateB) - B.states.begin();
 
-        for(int i = 0; i < A.probabilities.size(); i++){
+        int indexToBeTaken = BstateIndex * A.states.size() + AstateIndex;
+        return A.probabilities[indexToBeTaken];
 
-        }
+    }
+    
+    if( find(B.parents.begin(), B.parents.end(), A.ID) != B.parents.end() && B.parents.size() == 1 ){
 
-        throw runtime_error("Node A is a parent of Node B, cannot calculate conditional probabilities yet");
+        auto AstateIndex = find(A.states.begin(), A.states.end(), stateA) - A.states.begin();
+        auto BstateIndex = find(B.states.begin(), B.states.end(), stateB) - B.states.begin();
 
+        int indexToBeTaken = AstateIndex * B.states.size() + BstateIndex;
+        return B.probabilities[indexToBeTaken] * A.pureProb[AstateIndex] / B.pureProb[BstateIndex];
     }
 
     return result;
 
 }
-*/
+
 
 
 
@@ -49,7 +55,7 @@ double conditionalProbs(BayesianNode A, BayesianNode B, string stateA = "", stri
 
 
 int main(){
-    string filename = "../cancer.bif"; // file name
+    string filename = "../munin.bif"; // file name
 
 
     auto startParsing = chrono::high_resolution_clock::now(); // start the timer
@@ -87,9 +93,17 @@ int main(){
     cout << "Printing took: " << printingDuration.count() << " ms" << endl; // print the duration for printing
 
 
+
 //    conditionalProbs(network.getNode_name("Pollution"), network.getNode_name("Smoker"), "low", "yes"); // calculate the conditional probabilities of the nodes
-//    cout << conditionalProbs(network.getNode_name("Pollution"), network.getNode_name("Smoker")) << endl; // print the conditional probabilities of the nodes
-//    cout << conditionalProbs(network.getNode_name("Cancer"), network.getNode_name("Smoker")) << endl; // print the conditional probabilities of the nodes
+//    cout << conditionalProbs(network.getNode_name("B"), network.getNode_name("A"), "y", "H") << endl; // print the conditional probabilities of the nodes
+//    cout << conditionalProbs(network.getNode_name("B"), network.getNode_name("A"), "y", "M") << endl; // print the conditional probabilities of the nodes
+//    cout << conditionalProbs(network.getNode_name("B"), network.getNode_name("A"), "y", "L") << endl; // print the conditional probabilities of the nodes
+
+//    cout << conditionalProbs(network.getNode_name("B"), network.getNode_name("A"), "n", "M") << endl; // print the conditional probabilities of the nodes
+ //   cout << conditionalProbs(network.getNode_name("B"), network.getNode_name("A"), "m", "H") << endl; // print the conditional probabilities of the nodes
+
+ //   cout << endl << conditionalProbs(network.getNode_name("A"), network.getNode_name("B"), "H", "y") << endl; // print the conditional probabilities of the nodes
+
 
     cout << "\n\nThat's all folks!" << endl; // print the end message
 
