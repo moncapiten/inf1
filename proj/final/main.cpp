@@ -55,7 +55,7 @@ double conditionalProbs(BayesianNode A, BayesianNode B, string stateA = "", stri
 
 
 int main(){
-    string filename = "../munin.bif"; // file name
+    string filename = "../cancer.bif"; // file name
 
 
     auto startParsing = chrono::high_resolution_clock::now(); // start the timer

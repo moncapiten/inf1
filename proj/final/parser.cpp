@@ -15,6 +15,7 @@ void Parser::translate(){
         translator(group); // call the translator function to process the group
     }
 }
+
 BayesianNetwork& Parser::getNetwork() {
     return network; // return the Bayesian network object
 }
@@ -102,117 +103,155 @@ void Parser::grouper( vector<vector<string>>& groups, const string& token){
 // translator, it takes the groups and translates them into Bayesian nodes
 
 // TO DO:
-// check probability sums
-// check probability sums per n-tuple in CPT ( n = number of states)
-// check if the number of states is correct
-// check if the number of probabilities is correct
+// X - check probability sums
+// X - check probability sums per n-tuple in CPT ( n = number of states)
+// X - check if the number of states is correct
+// X - check if the number of probabilities is correct
 // check for loops
 
 
 void Parser::translator(vector<string>& group){
 
     for( auto i = group.begin(); i < group.end()-1; ++i){
-        if( *i == "variable" ){
-            string name = *next(i); // get the name of the variable
 
-            BayesianNode node(name); // create a new Bayesian node with the name
-            node.ID = network.size(); // set the ID of the node to the size of the network
-            network.addNode(node); // add the node to the network
+        if( *i == "network" ){
+            string name = *next(i); // get the name of the network
+            network = BayesianNetwork(name); // set the name of the network
+            return; // return if the group is a network
+        }
+        else {
+            // if we are trying to assign a variable to a non initialized network throw and error
+            if( network.name == "" ){
+                throw runtime_error("PARSER ERROR - Network was not initialized before being used"); // throw an error if the network name is not set
+            }
+        
 
-            
-            
-            for( auto j = next(i); j < group.end(); ++j){
+            if( *i == "variable" ){
 
-                if( *j == "type" ){
-                    if( *next(j, 1) != "discrete" ){
-                        return; // return an error code
+                string name = *next(i); // get the name of the variable
+
+                BayesianNode node(name); // create a new Bayesian node with the name
+                node.ID = network.size(); // set the ID of the node to the size of the network
+                network.addNode(node); // add the node to the network
+
+
+                for( auto j = next(i); j < group.end(); ++j){
+
+                    if( *j == "type" ){
+                        if( *next(j, 1) != "discrete" ){
+                            return; // return an error code
+                        }
+                        vector<string> states; // vector to hold the states
+
+                        auto firstParenthesisIndex = find(j, group.end(), "["); // find the first parenthesis
+                        auto lastParenthesisIndex = find(j, group.end(), "]"); // find the last parenthesis
+
+                        int declaredStatesCount = stoi(*next(firstParenthesisIndex)); // get the number of declared states
+
+
+                        firstParenthesisIndex = find(j, group.end(), "{"); // find the first parenthesis
+                        lastParenthesisIndex = find(j, group.end(), "}"); // find the last parenthesis
+
+                        for( auto k = next(firstParenthesisIndex); k < lastParenthesisIndex; ++k){
+                            if( *k == "," ){
+                                continue;
+                            } else {
+                                states.push_back(*k); // add the state to the vector
+                            }
+                        }
+
+                        if( states.size() != declaredStatesCount ){
+                            throw runtime_error("PARSER ERROR - Number of states does not match the declared number of states for node: " + name); // throw an error if the number of states does not match the declared number
+                        }
+
+                        network.getNode_name(name).states = states; // assign the states to the node
+                        return;
+
                     }
-                    vector<string> states; // vector to hold the states
 
-                    auto firstParenthesisIndex = find(j, group.end(), "{"); // find the first parenthesis
-                    auto lastParenthesisIndex = find(j, group.end(), "}"); // find the last parenthesis
+                }
 
-                    for( auto k = next(firstParenthesisIndex); k < lastParenthesisIndex; ++k){
-                        if( *k == "," ){
-                            continue;
+
+                return; // return if the group is a variable
+                
+            }
+
+
+
+
+            if( *i == "probability" ){
+                vector<double> probabilities; // vector to hold the probabilities
+                auto firstParenthesisIndex = find(i, group.end(), "("); // find the first parenthesis
+                auto lastParenthesisIndex = find(i, group.end(), ")"); // find the last parenthesis
+                string owner;
+
+                int possibleParentsStates = 1;
+
+
+                for( auto j = next(firstParenthesisIndex); j < lastParenthesisIndex; ++j){
+                    if( *j == "," || *j == "|" ){
+                        continue;
+                    } else {
+                        if( owner == "" ){
+                            owner = *j; // get the owner of the node
                         } else {
-                            states.push_back(*k); // add the state to the vector
+                            network.getNode_name(owner).parents.push_back(network.getNode_name(*j).ID); // add the parent to the node
+                            network.getNode_name(*j).children.push_back(network.getNode_name(owner).ID); // add the child to the parent
+                            possibleParentsStates *= network.getNode_name(*j).states.size(); // calculate the number of possible states for the parents
                         }
                     }
-                    network.getNode_name(name).states = states; // assign the states to the node
-//                        nodes[indecesArchive[group[1]]].states = states; // assign the states to the node
-                    return;
-
                 }
 
-            }
 
+                firstParenthesisIndex = find(lastParenthesisIndex, group.end(), "{"); // find the first parenthesis
+                lastParenthesisIndex = find(i, group.end(), "}"); // find the last parenthesis
+                int parenDepth = 0; // variable to hold the parenthesis depth
+                int CPTEntries = 0; // variable to hold the counter for the probabilities
 
-            return; // return if the group is a variable
-            
-        }
-
-
-
-
-        if( *i == "probability" ){
-            vector<double> probabilities; // vector to hold the probabilities
-            auto firstParenthesisIndex = find(i, group.end(), "("); // find the first parenthesis
-            auto lastParenthesisIndex = find(i, group.end(), ")"); // find the last parenthesis
-            string owner;
-
-
-
-            for( auto j = next(firstParenthesisIndex); j < lastParenthesisIndex; ++j){
-                if( *j == "," || *j == "|" ){
-                    continue;
-                } else {
-                    if( owner == "" ){
-                        owner = *j; // get the owner of the node
-                    } else {
-                        network.getNode_name(owner).parents.push_back(network.getNode_name(*j).ID); // add the parent to the node
-                        network.getNode_name(*j).children.push_back(network.getNode_name(owner).ID); // add the child to the parent
+                for(auto j = next(firstParenthesisIndex); j < lastParenthesisIndex; ++j){
+                    if( *j == ";" ){
+                        if(parenDepth != 0){
+                            return; // return an error code
+                        } else{
+                            continue; // continue if the parenthesis is not closed
+                        }
+                    } else if( *j == "(" ){
+                        parenDepth++; // increase the parenthesis depth
+                    } else if( *j == ")" ){
+                        parenDepth--; // decrease the parenthesis depth
+                    } else if( *j == "," || *j == "table" ){
+                        continue; // continue if the token is a comma
+                    } else if (parenDepth == 0){
+                        network.getNode_name(owner).probabilities.push_back(stod(*j)); // convert the string to double and add it to the vector
+                        CPTEntries++;
                     }
                 }
-            }
 
 
-            firstParenthesisIndex = find(lastParenthesisIndex, group.end(), "{"); // find the first parenthesis
-            lastParenthesisIndex = find(i, group.end(), "}"); // find the last parenthesis
-            int parenDepth = 0; // variable to hold the parenthesis depth
 
+                for(auto j = network.getNode_name(owner).probabilities.begin(); j < network.getNode_name(owner).probabilities.end(); j += network.getNode_name(owner).states.size()){
 
-            for(auto j = next(firstParenthesisIndex); j < lastParenthesisIndex; ++j){
-                if( *j == ";" ){
-                    if(parenDepth != 0){
-                        return; // return an error code
-                    } else{
-                        continue; // continue if the parenthesis is not closed
+                    double testSum = accumulate(j, j + network.getNode_name(owner).states.size(), 0.0); // calculate the sum of the probabilities for each state
+                    if( abs(testSum - 1.0) > 1e-7 ){
+                        throw runtime_error("PARSER ERROR - Line in CPT does not sum to 1 for node: " + owner); // throw an error if the probabilities do not sum to 1
                     }
-                } else if( *j == "(" ){
-                    parenDepth++; // increase the parenthesis depth
-                } else if( *j == ")" ){
-                    parenDepth--; // decrease the parenthesis depth
-                } else if( *j == "," || *j == "table" ){
-                    continue; // continue if the token is a comma
-                } else if (parenDepth == 0){
-                    network.getNode_name(owner).probabilities.push_back(stod(*j)); // convert the string to double and add it to the vector
                 }
+
+                if( CPTEntries != network.getNode_name(owner).states.size() * possibleParentsStates ){
+                    throw runtime_error("PARSER ERROR - Incorrect number of probabilities in the CPT for node: " + owner); // throw an error if the number of probabilities is incorrect
+                }
+
+                if( network.getNode_name(owner).parents.size() == 0 ){
+                    network.getNode_name(owner).pureProb = network.getNode_name(owner).probabilities; // assign the probabilities to the node
+                    return; // return if the node has no parents
+                }
+                return;
+
+
             }
-
-
-
-
-            if( network.getNode_name(owner).parents.size() == 0 ){
-                network.getNode_name(owner).pureProb = network.getNode_name(owner).probabilities; // assign the probabilities to the node
-                return; // return if the node has no parents
-            }
-            return;
 
 
         }
-
-
 
     }
 

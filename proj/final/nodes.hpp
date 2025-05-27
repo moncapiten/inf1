@@ -44,7 +44,11 @@ struct BayesianNode {
 
 class BayesianNetwork {
     public:
-        BayesianNetwork() {
+        string name; // name of the Bayesian network
+
+        BayesianNetwork() = default; // default constructor for the BayesianNetwork class
+        
+        BayesianNetwork(string name) : name(name) {
             // Constructor for the BayesianNetwork class
         }
 
