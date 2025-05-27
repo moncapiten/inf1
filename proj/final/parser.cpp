@@ -12,6 +12,9 @@ void Parser::parse(const string& input) {
 
 void Parser::translate(){
     for(auto group : dividedGroups) { // iterate through the groups
+        if( checkParenthesis(group) == false ){
+            throw runtime_error("PARSER ERROR - Unbalanced parentheses in group"); // throw an error if the parentheses are unbalanced
+        }
         translator(group); // call the translator function to process the group
     }
 }
@@ -109,6 +112,8 @@ void Parser::grouper( vector<vector<string>>& groups, const string& token){
 // X - check if the number of probabilities is correct
 // check for loops
 
+// --> parenthesis check is done in grouper before the translator is called
+
 
 void Parser::translator(vector<string>& group){
 
@@ -195,8 +200,12 @@ void Parser::translator(vector<string>& group){
                         if( owner == "" ){
                             owner = *j; // get the owner of the node
                         } else {
-                            network.getNode_name(owner).parents.push_back(network.getNode_name(*j).ID); // add the parent to the node
-                            network.getNode_name(*j).children.push_back(network.getNode_name(owner).ID); // add the child to the parent
+                            try{
+                                network.getNode_name(owner).parents.push_back(network.getNode_name(*j).ID); // add the parent to the node
+                                network.getNode_name(*j).children.push_back(network.getNode_name(owner).ID); // add the child to the parent
+                            } catch (const out_of_range& e) {
+                                throw runtime_error("PARSER ERROR - Node " + *j + " not found in the network while parsing probabilities for node: " + owner); // throw an error if the node is not found
+                            }
                             possibleParentsStates *= network.getNode_name(*j).states.size(); // calculate the number of possible states for the parents
                         }
                     }

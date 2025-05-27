@@ -50,7 +50,7 @@ vector<int> Marginalizer::reorder(vector<BayesianNode> nodesIndeces) {
         }
 
         if (!progress && !origin.empty()) {
-            throw runtime_error("Cycle detected or missing parent nodes.");
+            throw runtime_error("MARGINALIZER ERROR - Cycle detected or missing parent nodes - occurred at node: " + origin.front().name);
         }
 
     } while (!origin.empty());

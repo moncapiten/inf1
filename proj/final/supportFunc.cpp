@@ -31,44 +31,43 @@ ostream& operator<<(ostream& os, const vector<std::string>& vec) {
     }
     return os << "]";
 }
-/*
+
+
 template <typename T>
-class Stack {
-    private:
-        vector<T> data;
+void Stack<T>::push(const T & x){
+    data.push_back(x);
+}
 
-    public:
-        void push(const T & x){
-            data.push_back(x);
-        }
+template <typename T>
+T Stack<T>::pop(){
 
-        T pop(){
+    if( data.empty() ){
+        throw out_of_range("Stack<>::pop(): empty stack");
+    } 
+    T temporary_container = data.back();
+    data.pop_back();
 
-            if( data.empty() ){
-                throw out_of_range("Stack<>::pop(): empty stack");
-            } 
-            T temporary_container = data.back();
-            data.pop_back();
+    return temporary_container;
+}
 
-            return temporary_container;
-        }
+template <typename T>
+auto Stack<T>::empty(){
+    return data.empty();
+}
 
-        auto empty(){
-            return data.empty();
-        }
+template <typename T>
+auto Stack<T>::size(){
+    return data.size();
+}
 
-        auto size(){
-            return data.size();
-        }
+/*template <typename T>
+ostream & operator << (ostream & os, const Stack<T> & s){
+    for (const auto & i : s.data){
+        os << i << " ";
+    }
+    return os;
+}*/
 
-
-        friend ostream & operator << (ostream & os, const Stack<T> & s){
-            for (const auto & i : s.data){
-                os << i << " ";
-            }
-            return os;
-        }
-};
 
 bool checkParenthesis(const vector<string>& v){
     
@@ -102,4 +101,3 @@ bool checkParenthesis(const vector<string>& v){
 
     return stack.empty();
 }
-*/
