@@ -25,7 +25,7 @@ BayesianNetwork& Parser::getNetwork() {
 
 // fileStreamer, creates from the filename it reads the file and saves it to a string
 // it then calls the tokenizer to process the string into tokens
-void Parser::streamer(const string& filename){
+/*void Parser::streamer(const string& filename){
     ifstream file(filename);
     string line;
 
@@ -39,6 +39,33 @@ void Parser::streamer(const string& filename){
         throw runtime_error("Unable to open file"); // throw an error if the file cannot be opened
     }
 }
+*/
+
+
+void Parser::streamer(const string& filename) {
+    ifstream file(filename);
+    if (!file.is_open()) {
+        throw runtime_error("Unable to open file: " + filename);
+    }
+
+    string line;
+    size_t line_num = 1;
+    while (getline(file, line)) {
+        tokenizer(line);  // Line-aware processing
+//        tokenizer(line, line_num++);  // Line-aware processing
+    }
+
+    // Handle read errors (EOF doesn't set failbit)
+    if (file.bad()) {
+        throw runtime_error("I/O error reading: " + filename);
+    }
+    if (file.fail() && !file.eof()) {
+        throw runtime_error("Format error in: " + filename);
+    }
+    // the closing is donw automatically by the destructor of ifstream
+}
+
+
 
 
 
