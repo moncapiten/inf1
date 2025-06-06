@@ -55,7 +55,8 @@ class BayesianNetwork {
         void addNode(const BayesianNode& node);
         
         BayesianNode& getNode_ID(int ID);
-        
+        const BayesianNode& getNode_ID(int ID) const;
+
         BayesianNode& getNode_name(const string& name);
         
         int size() const;

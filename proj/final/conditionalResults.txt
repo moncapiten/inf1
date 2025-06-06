@@ -1,0 +1,151 @@
+NETWORK:
+
+Node: A alias 0
+  Parents:
+  Children: 12
+  States: H M L  [0, 1]
+  Flattened CPT: 0.3 0.4 0.3
+  Pure Probabilities: 0.3 0.4 0.3   sum: 1
+
+Node: B alias 1
+  Parents: 0
+  Children: 2
+  States: H L  [0, 1]
+  Flattened CPT: 0.8 0.2 0.5 0.5 0.1 0.9
+  Pure Probabilities: 0.47 0.53   sum: 1
+
+Node: C alias 2
+  Parents: 01
+  Children:
+  States: High Medium Low  [0, 1]
+  Flattened CPT: 0.9 0.08 0.02 0.6 0.3 0.1 0.7 0.2 0.1 0.4 0.4 0.2 0.3 0.5 0.2 0.05 0.25 0.7
+  Pure Probabilities: 0.47355 0.30523 0.22122   sum: 1
+
+
+Parsing took: 0.2774 ms
+Translation took: 0.1483 ms
+Marginalization took: 0.0311 ms
+Printing took: 13.6546 ms
+
+
+CONDITIONAL PROBABILITIES P(A | B):
+P(A= H | B = H)0.510638
+P(A= M | B = H)0.425532
+P(A= L | B = H)0.0638298
+P(A= H | B = L)0.113208
+P(A= M | B = L)0.377358
+P(A= L | B = L)0.509434
+
+
+CONDITIONAL PROBABILITIES P(B | A):
+P(B= H | A = H)0.8
+P(B= L | A = H)0.2
+P(B= H | A = M)0.5
+P(B= L | A = M)0.5
+P(B= H | A = L)0.1
+P(B= L | A = L)0.9
+
+
+CONDITIONAL PROBABILITIES P(A | C):
+P(A= H | C = High)0.509606
+P(A= M | C = High)0.444894
+P(A= L | C = High)0.0455005
+P(A= H | C = Medium)0.155194
+P(A= M | C = Medium)0.500626
+P(A= L | C = Medium)0.34418
+P(A= H | C = Low)0.0406321
+P(A= M | C = Low)0.225734
+P(A= L | C = Low)0.733634
+
+
+CONDITIONAL PROBABILITIES P(C | A):
+P(C= High | A = H)0.84
+P(C= Medium | A = H)0.124
+P(C= Low | A = H)0.036
+P(C= High | A = M)0.55
+P(C= Medium | A = M)0.3
+P(C= Low | A = M)0.15
+P(C= High | A = L)0.075
+P(C= Medium | A = L)0.275
+P(C= Low | A = L)0.65
+
+
+CONDITIONAL PROBABILITIES P(C | B):
+P(C= High | B = H)0.776596
+P(C= Medium | B = H)0.157872
+P(C= Low | B = H)0.0655319
+P(C= High | B = L)0.24434
+P(C= Medium | B = L)0.312264
+P(C= Low | B = L)0.443396
+
+
+CONDITIONAL PROBABILITIES P(B | C):
+P(B= H | C = High)0.738119
+P(B= L | C = High)0.261881
+P(B= H | C = Medium)0.309554
+P(B= L | C = Medium)0.690446
+P(B= H | C = Low)0.115877
+P(B= L | C = Low)0.884123
+
+
+That's all folks!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ChatGPT conditionalization
+
+P(A|B)
+| B \ A | H     | M     | L     |
+| ----- | ----- | ----- | ----- |
+| H     | 0.511 | 0.426 | 0.064 |
+| L     | 0.113 | 0.377 | 0.509 |
+
+P(B|A)
+| A \ B | H   | L   |
+| ----- | --- | --- |
+| H     | 0.8 | 0.2 |
+| M     | 0.5 | 0.5 |
+| L     | 0.1 | 0.9 |
+
+
+P(A|C)
+| C\A  | H     | M     | L     |
+| ---- | ----- | ----- | ----- |
+| High | 0.51  | 0.44  | 0.046 |
+| Med  | 0.155 | 0.50  | 0.344 |
+| Low  | 0.041 | 0.226 | 0.733 |
+
+P(C|A)
+| A\C | High  | Medium | Low   |
+| --- | ----- | ------ | ----- |
+| H   | 0.84  | 0.124  | 0.036 |
+| M   | 0.55  | 0.3    | 0.15  |
+| L   | 0.075 | 0.275  | 0.65  |
+
+
+
+P(C|B)
+| B\C | High  | Medium | Low   |
+| --- | ----- | ------ | ----- |
+| H   | 0.777 | 0.158  | 0.066 |
+| L   | 0.244 | 0.312  | 0.442 |
+
+P(B|C)
+| C\B    | H     | L     |
+| ------ | ----- | ----- |
+| High   | 0.739 | 0.261 |
+| Medium | 0.311 | 0.689 |
+| Low    | 0.117 | 0.883 |

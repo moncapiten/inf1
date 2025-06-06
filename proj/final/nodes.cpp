@@ -17,6 +17,13 @@ BayesianNode& BayesianNetwork::getNode_ID(int ID) {
     return nodes[ID]; // return the node with the given ID
 }
 
+const BayesianNode& BayesianNetwork::getNode_ID(int ID) const {
+    if (ID < 0 || ID >= nodes.size()) {
+        throw out_of_range("Node ID is out of range"); // throw an error if the ID is out of range
+    }
+    return nodes[ID]; // return the node with the given ID
+}
+
 BayesianNode& BayesianNetwork::getNode_name(const string& name) {
     auto it = substitutionIndeces.find(name); // find the index of the node with the given name
     if (it == substitutionIndeces.end()) {
