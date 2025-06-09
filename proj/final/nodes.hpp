@@ -65,6 +65,13 @@ class BayesianNetwork {
         
         void updateMaps(string name, int index);
 
+        unordered_map<string, int> getSubstitutionIndeces() const {
+            return substitutionIndeces; // return the map of names and their indices
+        }
+        unordered_map<int, string> getSubstitutionNames() const {
+            return substitutionNames; // return the map of indices and their names
+        }
+
         private:
         vector<BayesianNode> nodes; // vector to hold the Bayesian nodes
         unordered_map<string, int> substitutionIndeces; // map to hold the names of the nodes and their indices

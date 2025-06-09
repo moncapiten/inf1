@@ -1,48 +1,4 @@
-#include <unordered_map>
-#include <numeric>
-#include <stdexcept>
-#include <vector>
-#include "nodes.hpp"
-#include <algorithm>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#include "conditionalizer.hpp"
 
 // Helper to get index of a state
 int stateIndex(const BayesianNode& node, const string& state) {
@@ -51,16 +7,7 @@ int stateIndex(const BayesianNode& node, const string& state) {
     return distance(node.states.begin(), it);
 }
 
-
-
-
-
-
-
-
-
-
-
+// Compute the index in the CPT for a given node and assignment
 int computeCPTIndex(const BayesianNode& node,
                     const BayesianNetwork& net,
                     const unordered_map<string, string>& assignment) {
@@ -69,7 +16,8 @@ int computeCPTIndex(const BayesianNode& node,
     int multiplier = 1;
 
     // For each parent in **left-to-right** order
-    for (int i = node.parents.size() - 1; i >= 0; --i) {
+    for (int i = 0; i < node.parents.size(); ++i){
+//    for (int i = node.parents.size() - 1; i >= 0; --i) {
         const BayesianNode& parent = net.getNode_ID(node.parents[i]);
         int parentStateIndex = stateIndex(parent, assignment.at(parent.name));
         index += parentStateIndex * multiplier;
@@ -81,40 +29,10 @@ int computeCPTIndex(const BayesianNode& node,
     return index * numStates + nodeStateIndex;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // Recursively compute joint probability for an assignment
 double computeJointProb(const BayesianNetwork& net,
                         const unordered_map<string, string>& assignment,
-                        unordered_map<string, int> cache = {}) {
+                        unordered_map<string, int> cache) {
     double prob = 1.0;
     for (const auto& node : net.getNodes()) {
         const string& name = node.name;
@@ -130,15 +48,6 @@ double computeJointProb(const BayesianNetwork& net,
 
         int idx = computeCPTIndex(node, net, assignment);
         prob *= node.probabilities[idx];
-//        int multiplier = 1;
-//        for (int i = node.parents.size() - 1; i >= 0; --i) {
-//            const BayesianNode& parent = net.getNode_ID(node.parents[i]);
-//            int pIdx = stateIndex(parent, assignment.at(parent.name));
-//            idx += pIdx * multiplier;
-//            multiplier *= parent.states.size();
-//        }
-//        idx = idx * node.states.size() + valIndex;
-//        prob *= node.probabilities[idx];
     }
     return prob;
 }
@@ -147,7 +56,7 @@ double computeJointProb(const BayesianNetwork& net,
 void enumerateAllAssignments(const BayesianNetwork& net,
                              unordered_map<string, string>& partial,
                              vector<unordered_map<string, string>>& out,
-                             size_t i = 0) {
+                             size_t i) {
     const vector<BayesianNode>& nodes = net.getNodes();
     if (i == nodes.size()) {
         out.push_back(partial);
@@ -166,10 +75,43 @@ void enumerateAllAssignments(const BayesianNetwork& net,
     }
 }
 
+
+
+double computeJointProbability(BayesianNetwork& net,
+                                const string& A, const string& a,
+                                const string& B, const string& b) {
+    // 0. Check if nodes exist and if states are valid
+    if (net.getSubstitutionIndeces().find(A) == net.getSubstitutionIndeces().end()) throw invalid_argument("Node " + A + " not found in the network.");
+    if (net.getSubstitutionIndeces().find(B) == net.getSubstitutionIndeces().end()) throw invalid_argument("Node " + A + " or " + B + " not found in the network.");
+
+    if (find(net.getNode_name(A).states.begin(), net.getNode_name(A).states.end(), a) == net.getNode_name(A).states.end()) throw invalid_argument("State " + a + " not found in node " + A);
+    if (find(net.getNode_name(B).states.begin(), net.getNode_name(B).states.end(), b) == net.getNode_name(B).states.end()) throw invalid_argument("State " + b + " not found in node " + B);
+
+    // 1. Create a base assignment with A = a and B = b
+    unordered_map<string, string> base = {{A, a}, {B, b}};
+    vector<unordered_map<string, string>> fullAssignments;
+    enumerateAllAssignments(net, base, fullAssignments);
+
+    double jointProb = 0.0;
+    for (const auto& assign : fullAssignments) {
+        jointProb += computeJointProb(net, assign);
+    }
+    return jointProb;
+}
+
+
+
 // Main function: P(A = a | B = b)
-double computeConditionalProbability(const BayesianNetwork& net,
+double computeConditionalProbability(BayesianNetwork& net,
                                      const string& A, const string& a,
                                      const string& B, const string& b) {
+    // 0. Check if nodes exist and if states are valid
+    if (net.getSubstitutionIndeces().find(A) == net.getSubstitutionIndeces().end()) throw invalid_argument("Node " + A + " not found in the network.");
+    if (net.getSubstitutionIndeces().find(B) == net.getSubstitutionIndeces().end()) throw invalid_argument("Node " + A + " or " + B + " not found in the network.");
+
+    if (find(net.getNode_name(A).states.begin(), net.getNode_name(A).states.end(), a) == net.getNode_name(A).states.end()) throw invalid_argument("State " + a + " not found in node " + A);
+    if (find(net.getNode_name(B).states.begin(), net.getNode_name(B).states.end(), b) == net.getNode_name(B).states.end()) throw invalid_argument("State " + b + " not found in node " + B);
+
     // 1. Numerator: P(A = a, B = b)
     unordered_map<string, string> base = {{A, a}, {B, b}};
     vector<unordered_map<string, string>> fullAssignments;
@@ -191,8 +133,18 @@ double computeConditionalProbability(const BayesianNetwork& net,
     if (marginalB == 0) return 0;
     return joint / marginalB;
 }
-
-
+/*
+double computeConditionalProbability(BayesianNetwork& net, const string& A, const string& a, const string& B){
+    double prob = 0;
+    for(const auto& state : net.getNode_name(B).states){
+        cout << "Conditional probability P(" << A << "=" << a << " | " << B << "=" << state;
+        double conditionalProb = computeConditionalProbability(net, A, a, B, state);
+        cout << ") = " << conditionalProb << endl;
+//        prob += conditionalProb * net.getNode_name(B).pureProb[stateIndex(net.getNode_name(B), state)];
+    }
+    return prob;
+}
+*/
 
 
 

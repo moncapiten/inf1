@@ -54,27 +54,23 @@ void BayesianNetwork::updateMaps(string name, int index) {
 ostream& operator<<(ostream& os, const BayesianNode& node) {
     os << "Node: " << node.name << " alias " << node.ID << '\n';
 
-    os << "  Parents: ";
-    for (const auto& p : node.parents) os << p; //substitutionNames[p] << ' ';
-//    for (const auto& p : node.parents) os << p << ' ';
-    os << '\n';
+    os << "  Parents: [";
+    for (const auto& p : node.parents) os << " " << p << " ";
+    os << "]\n";
 
-    os << "  Children: ";
-    for (const auto& c : node.children) os << c; //substitutionNames[c] << ' ';
-//    for (const auto& c : node.children) os << c << ' ';
-    os << '\n';
+    os << "  Children: [ ";
+    for (const auto& c : node.children) os << c << " ";
+    os << "]\n";
 
-    os << "  States: ";
-    for (const auto& s : node.states) os << s << ' ';
-    os << " [0, 1]";
-    os << '\n';
+    os << "  States: [ ";
+    for (const auto& s : node.states) os << s << " ";
+    os << "]\n";
 
     os << "  Flattened CPT: ";
     for (const auto& prob : node.probabilities) os << prob << ' ';
     os << "\n";
 
     os << "  Pure Probabilities: ";
-//    double sum = 0;
     for (const auto& prob : node.pureProb){ os << prob << ' ';/* sum += prob;*/ }
     auto sum = accumulate(node.pureProb.begin(), node.pureProb.end(), 0.0); // calculate the sum of the pure probabilities
     os << "  sum: " << sum << "\n";
@@ -86,6 +82,7 @@ ostream& operator<<(ostream& os, const BayesianNode& node) {
 
 // Overload for a vector of nodes
 ostream& operator<<(ostream& os, const BayesianNetwork& network) {
+    os << "Bayesian Network: " << network.name << "\n\n";
     for (const auto& node : network.getNodes()) {
         os << node << '\n';
     }

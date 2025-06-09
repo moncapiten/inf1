@@ -78,9 +78,6 @@ void Marginalizer::updateVector(vector<int>& statesMask, const vector<int>& pare
 
 
 
-
-
-
 // marginalization function
 void Marginalizer::marginalizeNode(BayesianNode& node) {
 

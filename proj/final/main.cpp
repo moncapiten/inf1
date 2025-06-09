@@ -4,100 +4,14 @@
 #include "nodes.hpp"
 #include "supportFunc.hpp"
 #include "marginalizer.hpp"
-
-#include "conditionalizer.cpp"
+#include "conditionalizer.hpp"
 
 using namespace std;
 
-
-
-
-
-double getConditionalProbability(BayesianNetwork& net, const string& targetName, const string& givenName, 
-                                     const string& targetState, const string& givenState) {
-    BayesianNode& A = net.getNode_name(targetName); // P(A | B)
-    BayesianNode& B = net.getNode_name(givenName);
-
-    // Find index of desired states
-    auto itA = find(A.states.begin(), A.states.end(), targetState);
-    auto itB = find(B.states.begin(), B.states.end(), givenState);
-    if (itA == A.states.end() || itB == B.states.end()) {
-        throw invalid_argument("State not found in target or given node.");
-    }
-    int indexA = distance(A.states.begin(), itA);
-    int indexB = distance(B.states.begin(), itB);
-
-    // Build joint P(A = a, B = b) by iterating over A's CPT
-    // NOTE: this only works if B is a parent of A (i.e., P(A|B) is in A.probabilities)
-    if (find(A.parents.begin(), A.parents.end(), B.ID) == A.parents.end()) {
-        throw logic_error("B must be a parent of A for conditional lookup.");
-    }
-
-    // For binary states and single parent
-    int numStatesA = A.states.size();
-    int numStatesB = B.states.size();
-    
-    // Probabilities stored as: P(A | B): [A0|B0, A1|B0, A0|B1, A1|B1]
-    // So index = indexA + indexB * numStatesA
-    int idx = indexA + indexB * numStatesA;
-
-    double pAB = A.probabilities[idx];           // P(A = a | B = b)
-    double pB = B.pureProb[indexB];              // P(B = b)
-
-    if (pB == 0) return 0; // Avoid division by zero
-
-    return pAB * pB / pB; // Simplifies to pAB
-}
-
-
-
-
-
-double conditionalProbs(BayesianNode A, BayesianNode B, string stateA = "", string stateB = ""){
-    double result;
-
-    if( A.parents.empty() && B.parents.empty() ){
-        auto index = (find(A.states.begin(), A.states.end(), stateA) - A.states.begin());
-        return A.pureProb[index];
-    }
-
-    if( find(A.parents.begin(), A.parents.end(), B.ID) != A.parents.end() && A.parents.size() == 1 ){
-
-
-        auto AstateIndex = find(A.states.begin(), A.states.end(), stateA) - A.states.begin();
-        auto BstateIndex = find(B.states.begin(), B.states.end(), stateB) - B.states.begin();
-
-        int indexToBeTaken = BstateIndex * A.states.size() + AstateIndex;
-        return A.probabilities[indexToBeTaken];
-
-    }
-    
-    if( find(B.parents.begin(), B.parents.end(), A.ID) != B.parents.end() && B.parents.size() == 1 ){
-
-        auto AstateIndex = find(A.states.begin(), A.states.end(), stateA) - A.states.begin();
-        auto BstateIndex = find(B.states.begin(), B.states.end(), stateB) - B.states.begin();
-
-        int indexToBeTaken = AstateIndex * B.states.size() + BstateIndex;
-        return B.probabilities[indexToBeTaken] * A.pureProb[AstateIndex] / B.pureProb[BstateIndex];
-    }
-
-    return result;
-
-}
-
-
-
-
-
-
-
-
-
-
-
 int main(){
-    string filename = "../conditionaltest3.bif"; // file name
-
+    string filename;
+    cout << "insert the name of the file to parse: ";
+    cin >> filename;
 
     auto startParsing = chrono::high_resolution_clock::now(); // start the timer
     Parser parser; // create a new parser object
@@ -118,193 +32,51 @@ int main(){
     auto endMarginalization = chrono::high_resolution_clock::now(); // end the timer
 
     auto startPrinting = chrono::high_resolution_clock::now(); // start the timer for printing
-    cout << "\n\n\nNETWORK:" << endl << endl; // print the nodes
+//    cout << "\n\n\nNETWORK:" << endl << endl; // print the nodes
     cout << network; // print the nodes using the overloaded operator<<
     cout << endl; // print a new line after the nodes
     auto endPrinting = chrono::high_resolution_clock::now(); // end the timer for printing
-
-
-
-
-    double AHBH, AMBH, ALBH,
-           AHBL, AMBL, ALBL,
-
-           BHAH, BLAH,
-           BHAM, BLAM,
-           BHAL, BLAL,
-
-           AHCH, AMCH, ALCH,
-           AHCM, AMCM, ALCM,
-           AHCL, AMCL, ALCL,
-
-           CHAH, CMAH, CLAH,
-           CHAM, CMAM, CLAM,
-           CHAL, CMAL, CLAL,
-
-           CHBH, CMBH, CLBH,
-           CHBL, CMBL, CLBL,
-
-           BHCH, BLCH,
-           BHCM, BLCM,
-           BHCL, BLCL;
-
-    auto startConditioning = chrono::high_resolution_clock::now(); // start the timer for conditional probabilities
-    AHBH = computeConditionalProbability(network, "A", "H", "B", "H");
-    AMBH = computeConditionalProbability(network, "A", "M", "B", "H");
-    ALBH = computeConditionalProbability(network, "A", "L", "B", "H");
-    AHBL = computeConditionalProbability(network, "A", "H", "B", "L");
-    AMBL = computeConditionalProbability(network, "A", "M", "B", "L");
-    ALBL = computeConditionalProbability(network, "A", "L", "B", "L");
-
-    BHAH = computeConditionalProbability(network, "B", "H", "A", "H");
-    BLAH = computeConditionalProbability(network, "B", "L", "A", "H");
-    BHAM = computeConditionalProbability(network, "B", "H", "A", "M");
-    BLAM = computeConditionalProbability(network, "B", "L", "A", "M");
-    BHAL = computeConditionalProbability(network, "B", "H", "A", "L");
-    BLAL = computeConditionalProbability(network, "B", "L", "A", "L");
-
-    AHCH = computeConditionalProbability(network, "A", "H", "C", "H");
-    AMCH = computeConditionalProbability(network, "A", "M", "C", "H");
-    ALCH = computeConditionalProbability(network, "A", "L", "C", "H");
-    AHCM = computeConditionalProbability(network, "A", "H", "C", "M");
-    AMCM = computeConditionalProbability(network, "A", "M", "C", "M");
-    ALCM = computeConditionalProbability(network, "A", "L", "C", "M");
-    AHCL = computeConditionalProbability(network, "A", "H", "C", "L");
-    AMCL = computeConditionalProbability(network, "A", "M", "C", "L");
-    ALCL = computeConditionalProbability(network, "A", "L", "C", "L");
-
-    CHAH = computeConditionalProbability(network, "C", "H", "A", "H");
-    CHAM = computeConditionalProbability(network, "C", "H", "A", "M");
-    CHAL = computeConditionalProbability(network, "C", "H", "A", "L");
-    CMAH = computeConditionalProbability(network, "C", "M", "A", "H");
-    CMAM = computeConditionalProbability(network, "C", "M", "A", "M");
-    CMAL = computeConditionalProbability(network, "C", "M", "A", "L");
-    CLAH = computeConditionalProbability(network, "C", "L", "A", "H");
-    CLAM = computeConditionalProbability(network, "C", "L", "A", "M");
-    CLAL = computeConditionalProbability(network, "C", "L", "A", "L");
-
-    CHBH = computeConditionalProbability(network, "C", "H", "B", "H");
-    CMBH = computeConditionalProbability(network, "C", "M", "B", "H");
-    CLBH = computeConditionalProbability(network, "C", "L", "B", "H");
-    CHBL = computeConditionalProbability(network, "C", "H", "B", "L");
-    CMBL = computeConditionalProbability(network, "C", "M", "B", "L");
-    CLBL = computeConditionalProbability(network, "C", "L", "B", "L");
-
-    BHCH = computeConditionalProbability(network, "B", "H", "C", "H");
-    BLCH = computeConditionalProbability(network, "B", "L", "C", "H");
-    BHCM = computeConditionalProbability(network, "B", "H", "C", "M");
-    BLCM = computeConditionalProbability(network, "B", "L", "C", "M");
-    BHCL = computeConditionalProbability(network, "B", "H", "C", "L");
-    BLCL = computeConditionalProbability(network, "B", "L", "C", "L");
-
-    auto stopConditioning = chrono::high_resolution_clock::now(); // end the timer for conditional probabilities
-
-
-
-
-
-
-    cout << "\n\nCONDITIONAL PROBABILITIES P(A | B):" << endl; // print the conditional probabilities of the nodes
-    cout << "P(A=H, B=H) = " << AHBH << endl; // print the conditional probabilities of the nodes
-    cout << "P(A=M, B=H) = " << AMBH << endl; // print the conditional probabilities of the nodes
-    cout << "P(A=L, B=H) = " << ALBH << endl; // print the conditional probabilities of the nodes
-
-    cout << "P(A=H, B=L) = " << AHBL << endl; // print the conditional probabilities of the nodes
-    cout << "P(A=M, B=L) = " << AMBL << endl; // print the conditional probabilities of the nodes
-    cout << "P(A=L, B=L) = " << ALBL << endl; // print the conditional probabilities of the nodes
-
-    cout << "\n\nCONDITIONAL PROBABILITIES P(B | A):" << endl; // print the conditional probabilities of the nodes
-    cout << "P(B=H, A=H) = " << BHAH << endl; // print the conditional probabilities of the nodes
-    cout << "P(B=L, A=H) = " << BLAH << endl; // print the conditional probabilities of the nodes
-    
-    cout << "P(B=H, A=M) = " << BHAM << endl; // print the conditional probabilities of the nodes
-    cout << "P(B=L, A=M) = " << BLAM << endl; // print the conditional probabilities of the nodes
-
-    cout << "P(B=H, A=L) = " << BHAL << endl; // print the conditional probabilities of the nodes
-    cout << "P(B=L, A=L) = " << BLAL << endl; // print the conditional probabilities of the nodes
-    
-    cout << "\n\nCONDITIONAL PROBABILITIES P(A | C):" << endl; // print the conditional probabilities of the nodes
-    cout << "P(A=H,C=H) = " << AHCH << endl; // print the conditional probabilities of the nodes
-    cout << "P(A=M,C=H) = " << AMCH << endl; // print the conditional probabilities of the nodes
-    cout << "P(A=L,C=H) = " << ALCH << endl; // print the conditional probabilities of the nodes
-
-    cout << "P(A=H,C=M) = " << AHCM << endl; // print the conditional probabilities of the nodes
-    cout << "P(A=M,C=M) = " << AMCM << endl; // print the conditional probabilities of the nodes
-    cout << "P(A=L,C=M) = " << ALCM << endl; // print the conditional probabilities of the nodes
-
-    cout << "P(A=H,C=L) = " << AHCL << endl; // print the conditional probabilities of the nodes
-    cout << "P(A=M,C=L) = " << AMCL << endl; // print the conditional probabilities of the nodes
-    cout << "P(A=L,C=L) = " << ALCL << endl; // print the conditional probabilities of the nodes
-
-    cout << "\n\nCONDITIONAL PROBABILITIES P(C | A):" << endl; // print the conditional probabilities of the nodes
-    cout << "P(C=H|A=H) = " << CHAH << endl; // print the conditional probabilities of the nodes
-    cout << "P(C=M|A=H) = " << CHAM << endl; // print the conditional probabilities of the nodes
-    cout << "P(C=L|A=H) = " << CHAL << endl; // print the conditional probabilities of the nodes
-
-    cout << "P(C=H|A=M) = " << CMAH << endl; // print the conditional probabilities of the nodes
-    cout << "P(C=M|A=M) = " << CMAM << endl; // print the conditional probabilities of the nodes
-    cout << "P(C=L|A=M) = " << CMAL << endl; // print the conditional probabilities of the nodes
-
-    cout << "P(C=H|A=L) = " << CLAH << endl; // print the conditional probabilities of the nodes
-    cout << "P(C=M|A=L) = " << CLAM << endl; // print the conditional probabilities of the nodes
-    cout << "P(C=L|A=L) = " << CLAL << endl; // print the conditional probabilities of the nodes
-
-    cout << "\n\nCONDITIONAL PROBABILITIES P(C | B):" << endl; // print the conditional probabilities of the nodes
-    cout << "P(C=H|B=H) = " << CHBH << endl; // print the conditional probabilities of the nodes
-    cout << "P(C=M|B=H) = " << CMBH << endl; // print the conditional probabilities of the nodes
-    cout << "P(C=L|B=H) = " << CLBH << endl; // print the conditional probabilities of the nodes
-
-    cout << "P(C=H|B=L) = " << CHBL << endl; // print the conditional probabilities of the nodes
-    cout << "P(C=M|B=L) = " << CMBL << endl; // print the conditional probabilities of the nodes
-    cout << "P(C=L|B=L) = " << CLBL << endl; // print the conditional probabilities of the nodes
-
-    cout << "\n\nCONDITIONAL PROBABILITIES P(B | C):" << endl; // print the conditional probabilities of the nodes
-    cout << "P(B=H|C=H) = " << BHCH << endl; // print the conditional probabilities of the nodes
-    cout << "P(B=L|C=H) = " << BLCH << endl; // print the conditional probabilities of the nodes
-
-    cout << "P(B=H|C=M) = " << BHCM << endl; // print the conditional probabilities of the nodes
-    cout << "P(B=L|C=M) = " << BLCM << endl; // print the conditional probabilities of the nodes
-
-    cout << "P(B=H|C=L) = " << BHCL << endl; // print the conditional probabilities of the nodes
-    cout << "P(B=L|C=L) = " << BLCL << endl; // print the conditional probabilities of the nodes
-
 
 
     chrono::duration<double, milli> parsingDuration = endParsing - startParsing; // calculate the duration
     chrono::duration<double, milli> translationDuration = endTranslation - startTranslation; // calculate the duration
     chrono::duration<double, milli> duration = endMarginalization - startMarginalization; // calculate the duration
     chrono::duration<double, milli> printingDuration = endPrinting - startPrinting; // calculate the duration for printing
-//    chrono::duration<double, milli> conditioningDuration = stopConditioning - startConditioning; // calculate the duration for conditional probabilities
-    cout << "\n\n\n"; // print a new line
+
+    cout << "\n\n\n";
     cout << "Parsing took: " << parsingDuration.count() << " ms" << endl; // print the duration
     cout << "Translation took: " << translationDuration.count() << " ms" << endl; // print the duration
     cout << "Marginalization took: " << duration.count() << " ms" << endl; // print the duration
     cout << "Printing took: " << printingDuration.count() << " ms" << endl; // print the duration for printing
-//    cout << "Conditioning took: " << conditioningDuration.count() << " ms" << endl; // print the duration for conditional probabilities
 
 
 
+    // double computeConditionalProbability( network, A, a, B, b);
+    // maybe add a command parser to calculate conditional probabilities?
 
+//    cout << network.getNode_name("BirthAsphyxia").probabilities << endl; // print the node with the name "BirthAsphyxia"
+//    cout << network.getNode_name("A") << endl; // print the probabilities of the node "BirthAsphyxia"
 
-/*
-//    cout << network.getNode_ID(0) << endl; // print the first node of the network
-    auto startConditioning = chrono::high_resolution_clock::now(); // start the timer for conditional probabilities
-    double p = conditionalProbs(network.getNode_name("Dyspnoea"), network.getNode_name("Pollution"), "True", "high");
-    double p2 = conditionalProbs(network.getNode_name("Dyspnoea"), network.getNode_name("Pollution"), "False", "high");
-    double p3 = conditionalProbs(network.getNode_name("Dyspnoea"), network.getNode_name("Pollution"), "True", "low");
-    double p4 = conditionalProbs(network.getNode_name("Dyspnoea"), network.getNode_name("Pollution"), "False", "low");
-    auto stopConditioning = chrono::high_resolution_clock::now(); // end the timer for conditional probabilities
+//    cout << computeConditionalProbability(network, "A", "H", "C", "L") << endl; // calculate and print the conditional probability
 
-    chrono::duration<double, milli> conditioningDuration = stopConditioning - startConditioning; // calculate the duration for conditional probabilities
-    cout << "\n\nCONDITIONAL PROBABILITIES P(L_SUR_CV_CA | R_LNLW_MED_SEV):" << endl; // print the conditional probabilities of the nodes
-    cout << "P(dyspnoea=True | pollution=high) = " << p << endl; // print the conditional probabilities of the nodes
-    cout << "P(dyspnoea=False | pollution=high) = " << p2 << endl; // print the conditional probabilities of the nodes
-    cout << "P(dyspnoea=True | pollution=low) = " << p3 << endl; // print the conditional probabilities of the nodes
-    cout << "P(dyspnoea=False | pollution=low) = " << p4 << endl; // print the conditional probabilities of the nodes
-    cout << "Conditioning took: " << conditioningDuration.count() << " ms" << endl; // print the duration for conditional probabilities
-    cout << "\n\n\n"; // print a new line
-*/
+//    cout << network.getNode_name("A").states;
 
+    cout << computeConditionalProbability(network, "Xray", "positive", "Cancer", "False") << endl; // calculate and print the conditional probability
+    cout << computeConditionalProbability(network, "Cancer", "True", "Xray", "positive") << endl; // calculate and print the conditional probability
+    cout << computeConditionalProbability(network, "Xray", "positive", "Dyspnoea", "False") << endl; // calculate and print the conditional probability
+    cout << computeConditionalProbability(network, "Pollution", "high", "Xray", "negative") << endl; // calculate and print the conditional probability
+
+//    cout << computeConditionalProbability(network, "Pollution", "high", "Cancer") << endl; // calculate and print the conditional probability
+//    cout << computeConditionalProbability(network, "BirthAsphyxia", "yes", "Sick") << endl; // calculate and print the conditional probability
+
+    cout << computeJointProbability(network, "Pollution", "high", "Cancer", "True") << endl; // calculate and print the joint probability
+
+    string command;
+    cout << "\n\nType 'exit' to exit the program or 'help' for help: ";
+    cin >> command; // get the command from the user
+
+    parser.parse(command); // parse the command
+    parser.showGroups(); // show the groups
 
     cout << "\n\nThat's all folks!" << endl; // print the end message
 

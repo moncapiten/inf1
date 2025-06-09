@@ -23,24 +23,6 @@ BayesianNetwork& Parser::getNetwork() {
     return network; // return the Bayesian network object
 }
 
-// fileStreamer, creates from the filename it reads the file and saves it to a string
-// it then calls the tokenizer to process the string into tokens
-/*void Parser::streamer(const string& filename){
-    ifstream file(filename);
-    string line;
-
-    if (file.is_open()) {
-        while (getline(file, line)) {
-            tokenizer(line); // call the tokenizer function to process the line
-        }
-        file.close();
-        return; // return success code
-    } else {
-        throw runtime_error("Unable to open file"); // throw an error if the file cannot be opened
-    }
-}
-*/
-
 
 void Parser::streamer(const string& filename) {
     ifstream file(filename);
@@ -83,8 +65,6 @@ bool Parser::isTokenChar(char c) {
     }();
     return tokenTable[static_cast<unsigned char>(c)];
 }
-
-
 
 
 
@@ -138,6 +118,7 @@ void Parser::grouper( vector<vector<string>>& groups, const string& token){
 // X - check if the number of states is correct
 // X - check if the number of probabilities is correct
 // check for loops
+// maybe add check for comments?
 
 // --> parenthesis check is done in grouper before the translator is called
 
@@ -154,7 +135,7 @@ void Parser::translator(vector<string>& group){
         else {
             // if we are trying to assign a variable to a non initialized network throw and error
             if( network.name == "" ){
-                throw runtime_error("PARSER ERROR - Network was not initialized before being used"); // throw an error if the network name is not set
+                throw runtime_error("PARSER ERROR - Network was not initialized before trying to add elements to it"); // throw an error if the network name is not set
             }
         
 

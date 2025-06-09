@@ -3,7 +3,6 @@
 using namespace std;
 
 
-
 std::ostream& operator<<(std::ostream& os, const std::vector<double>& vec) {
     os << "[";
     for (size_t i = 0; i < vec.size(); ++i) {
@@ -59,15 +58,6 @@ template <typename T>
 auto Stack<T>::size(){
     return data.size();
 }
-
-/*template <typename T>
-ostream & operator << (ostream & os, const Stack<T> & s){
-    for (const auto & i : s.data){
-        os << i << " ";
-    }
-    return os;
-}*/
-
 
 bool checkParenthesis(const vector<string>& v){
     

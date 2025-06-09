@@ -12,11 +12,9 @@
 #include <iterator>
 #include <fstream>
 #include <stdexcept>
-
 #include <array>
 
 #include "supportFunc.hpp"
-
 #include "nodes.hpp"
 
 
@@ -31,6 +29,16 @@ public:
 
     // parse the input file
     void parse(const string& input);
+
+    void showGroups() const {
+        for (const auto& group : dividedGroups) {
+            cout << "Group: ";
+            for (const auto& token : group) {
+                cout << token << " ";
+            }
+            cout << endl;
+        }
+    }
 
     // translate from raw groups to Bayesian network nodes
     void translate();

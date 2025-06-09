@@ -28,7 +28,6 @@ class Stack {
         T pop();
         auto empty();
         auto size();
-//        friend ostream & operator << <>(ostream & os, const Stack<T> & s);
 };
 
 
