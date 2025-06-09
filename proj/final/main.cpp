@@ -5,7 +5,7 @@
 #include "supportFunc.hpp"
 #include "marginalizer.hpp"
 
-#include "conditionalizer.cpp"
+//#include "conditionalizer.cpp"
 
 using namespace std;
 
@@ -96,7 +96,7 @@ double conditionalProbs(BayesianNode A, BayesianNode B, string stateA = "", stri
 
 
 int main(){
-    string filename = "../munin.bif"; // file name
+    string filename = "../conditionaltest3.bif"; // file name
 
 
     auto startParsing = chrono::high_resolution_clock::now(); // start the timer
@@ -125,7 +125,7 @@ int main(){
 
 
 
-/*
+
     double AHBH, AMBH, ALBH,
            AHBL, AMBL, ALBL,
            BHAH, BLAH,
@@ -234,7 +234,7 @@ int main(){
 
     cout << "P(B=H|C=L) = " << BHCL << endl; // print the conditional probabilities of the nodes
     cout << "P(B=L|C=L) = " << BLCL << endl; // print the conditional probabilities of the nodes
-*/
+
 
 
     chrono::duration<double, milli> parsingDuration = endParsing - startParsing; // calculate the duration
@@ -250,16 +250,28 @@ int main(){
 //    cout << "Conditioning took: " << conditioningDuration.count() << " ms" << endl; // print the duration for conditional probabilities
 
 
+
+
+
+/*
 //    cout << network.getNode_ID(0) << endl; // print the first node of the network
     auto startConditioning = chrono::high_resolution_clock::now(); // start the timer for conditional probabilities
-    double p = conditionalProbs(network.getNode_name("L_SUR_CV_CA"), network.getNode_name("R_LNLW_MED_SEV"), "M_S56", "MILD");
+    double p = conditionalProbs(network.getNode_name("Dyspnoea"), network.getNode_name("Pollution"), "True", "high");
+    double p2 = conditionalProbs(network.getNode_name("Dyspnoea"), network.getNode_name("Pollution"), "False", "high");
+    double p3 = conditionalProbs(network.getNode_name("Dyspnoea"), network.getNode_name("Pollution"), "True", "low");
+    double p4 = conditionalProbs(network.getNode_name("Dyspnoea"), network.getNode_name("Pollution"), "False", "low");
     auto stopConditioning = chrono::high_resolution_clock::now(); // end the timer for conditional probabilities
 
     chrono::duration<double, milli> conditioningDuration = stopConditioning - startConditioning; // calculate the duration for conditional probabilities
     cout << "\n\nCONDITIONAL PROBABILITIES P(L_SUR_CV_CA | R_LNLW_MED_SEV):" << endl; // print the conditional probabilities of the nodes
-    cout << "P(L_SUR_CV_CA=M_S56 | R_LNLW_MED_SEV=MILD) = " << p << endl; // print the conditional probabilities of the nodes
+    cout << "P(dyspnoea=True | pollution=high) = " << p << endl; // print the conditional probabilities of the nodes
+    cout << "P(dyspnoea=False | pollution=high) = " << p2 << endl; // print the conditional probabilities of the nodes
+    cout << "P(dyspnoea=True | pollution=low) = " << p3 << endl; // print the conditional probabilities of the nodes
+    cout << "P(dyspnoea=False | pollution=low) = " << p4 << endl; // print the conditional probabilities of the nodes
     cout << "Conditioning took: " << conditioningDuration.count() << " ms" << endl; // print the duration for conditional probabilities
     cout << "\n\n\n"; // print a new line
+*/
+
 
     cout << "\n\nThat's all folks!" << endl; // print the end message
 
