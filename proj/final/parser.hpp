@@ -43,6 +43,14 @@ public:
     // translate from raw groups to Bayesian network nodes
     void translate();
 
+    // tokenizer, takes the line and splits it into tokens
+    void tokenizer(string line);
+
+    void flush() {
+        dividedGroups.clear(); // clear the vector of groups
+        network = BayesianNetwork(); // reset the Bayesian network object
+    }
+
     // outputs the Bayesian network object
     BayesianNetwork& getNetwork();
 
@@ -57,8 +65,7 @@ private:
     // helper function to the tokenizer, checks if the character is a valid token character
     bool isTokenChar(char c);
 
-    // tokenizer, takes the line and splits it into tokens
-    void tokenizer(string line);
+
 
     // grouper, it groups tokens into logical groups
     void grouper( vector<vector<string>>& groups, const string& token);

@@ -71,14 +71,6 @@ int main(){
 
     cout << computeJointProbability(network, "Pollution", "high", "Cancer", "True") << endl; // calculate and print the joint probability
 
-    string command;
-    cout << "\n\nType 'exit' to exit the program or 'help' for help: ";
-    cin >> command; // get the command from the user
-
-    parser.parse(command); // parse the command
-    parser.showGroups(); // show the groups
-
-    cout << "\n\nThat's all folks!" << endl; // print the end message
 
 
 
