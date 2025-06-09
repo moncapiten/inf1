@@ -1,4 +1,4 @@
-network threeNodeBN {
+network conditionaltest3 {
 }
 
 variable A {

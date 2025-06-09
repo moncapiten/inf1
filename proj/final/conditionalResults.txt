@@ -1,5 +1,4 @@
 NETWORK:
-
 Node: A alias 0
   Parents:
   Children: 12
