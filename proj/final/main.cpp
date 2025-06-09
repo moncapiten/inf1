@@ -5,7 +5,7 @@
 #include "supportFunc.hpp"
 #include "marginalizer.hpp"
 
-//#include "conditionalizer.cpp"
+#include "conditionalizer.cpp"
 
 using namespace std;
 
@@ -128,42 +128,75 @@ int main(){
 
     double AHBH, AMBH, ALBH,
            AHBL, AMBL, ALBL,
+
            BHAH, BLAH,
            BHAM, BLAM,
            BHAL, BLAL,
+
            AHCH, AMCH, ALCH,
            AHCM, AMCM, ALCM,
            AHCL, AMCL, ALCL,
-           CHAH, CHAM, CHAL,
-           CMAH, CMAM, CMAL,
-           CLAH, CLAM, CLAL,
+
+           CHAH, CMAH, CLAH,
+           CHAM, CMAM, CLAM,
+           CHAL, CMAL, CLAL,
+
            CHBH, CMBH, CLBH,
            CHBL, CMBL, CLBL,
+
            BHCH, BLCH,
            BHCM, BLCM,
            BHCL, BLCL;
 
     auto startConditioning = chrono::high_resolution_clock::now(); // start the timer for conditional probabilities
-    AHBH = conditionalProbs(network.getNode_name("A"), network.getNode_name("B"), "H", "H");
-    AMBH = conditionalProbs(network.getNode_name("A"), network.getNode_name("B"), "M", "H");
-    ALBH = conditionalProbs(network.getNode_name("A"), network.getNode_name("B"), "L", "H");
-    AHBL = conditionalProbs(network.getNode_name("A"), network.getNode_name("B"), "H", "L");
-    AMBL = conditionalProbs(network.getNode_name("A"), network.getNode_name("B"), "M", "L");
-    ALBL = conditionalProbs(network.getNode_name("A"), network.getNode_name("B"), "L", "L");
+    AHBH = computeConditionalProbability(network, "A", "H", "B", "H");
+    AMBH = computeConditionalProbability(network, "A", "M", "B", "H");
+    ALBH = computeConditionalProbability(network, "A", "L", "B", "H");
+    AHBL = computeConditionalProbability(network, "A", "H", "B", "L");
+    AMBL = computeConditionalProbability(network, "A", "M", "B", "L");
+    ALBL = computeConditionalProbability(network, "A", "L", "B", "L");
 
-    BHAH = conditionalProbs(network.getNode_name("B"), network.getNode_name("A"), "H", "H");
-    BLAH = conditionalProbs(network.getNode_name("B"), network.getNode_name("A"), "L", "H");
-    BHAM = conditionalProbs(network.getNode_name("B"), network.getNode_name("A"), "H", "M");
-    BLAM = conditionalProbs(network.getNode_name("B"), network.getNode_name("A"), "L", "M");
-    BHAL = conditionalProbs(network.getNode_name("B"), network.getNode_name("A"), "H", "L");
-    BLAL = conditionalProbs(network.getNode_name("B"), network.getNode_name("A"), "L", "L");
+    BHAH = computeConditionalProbability(network, "B", "H", "A", "H");
+    BLAH = computeConditionalProbability(network, "B", "L", "A", "H");
+    BHAM = computeConditionalProbability(network, "B", "H", "A", "M");
+    BLAM = computeConditionalProbability(network, "B", "L", "A", "M");
+    BHAL = computeConditionalProbability(network, "B", "H", "A", "L");
+    BLAL = computeConditionalProbability(network, "B", "L", "A", "L");
 
-    AHCH = conditionalProbs(network.getNode_name("A"), network.getNode_name("C"), "H", "H");
-    AMCH = conditionalProbs(network.getNode_name("A"), network.getNode_name("C"), "M", "H");
-    ALCH = conditionalProbs(network.getNode_name("A"), network.getNode_name("C"), "L", "H");
-    AHCM = conditionalProbs(network.getNode_name("A"), network.getNode_name("C"), "H", "M");
-    AMCM = conditionalProbs(network.getNode_name("A"), network.getNode_name("C"), "M", "M");
-    ALCM = conditionalProbs(network.getNode_name("A"), network.getNode_name("C"), "L", "M");
+    AHCH = computeConditionalProbability(network, "A", "H", "C", "H");
+    AMCH = computeConditionalProbability(network, "A", "M", "C", "H");
+    ALCH = computeConditionalProbability(network, "A", "L", "C", "H");
+    AHCM = computeConditionalProbability(network, "A", "H", "C", "M");
+    AMCM = computeConditionalProbability(network, "A", "M", "C", "M");
+    ALCM = computeConditionalProbability(network, "A", "L", "C", "M");
+    AHCL = computeConditionalProbability(network, "A", "H", "C", "L");
+    AMCL = computeConditionalProbability(network, "A", "M", "C", "L");
+    ALCL = computeConditionalProbability(network, "A", "L", "C", "L");
+
+    CHAH = computeConditionalProbability(network, "C", "H", "A", "H");
+    CHAM = computeConditionalProbability(network, "C", "H", "A", "M");
+    CHAL = computeConditionalProbability(network, "C", "H", "A", "L");
+    CMAH = computeConditionalProbability(network, "C", "M", "A", "H");
+    CMAM = computeConditionalProbability(network, "C", "M", "A", "M");
+    CMAL = computeConditionalProbability(network, "C", "M", "A", "L");
+    CLAH = computeConditionalProbability(network, "C", "L", "A", "H");
+    CLAM = computeConditionalProbability(network, "C", "L", "A", "M");
+    CLAL = computeConditionalProbability(network, "C", "L", "A", "L");
+
+    CHBH = computeConditionalProbability(network, "C", "H", "B", "H");
+    CMBH = computeConditionalProbability(network, "C", "M", "B", "H");
+    CLBH = computeConditionalProbability(network, "C", "L", "B", "H");
+    CHBL = computeConditionalProbability(network, "C", "H", "B", "L");
+    CMBL = computeConditionalProbability(network, "C", "M", "B", "L");
+    CLBL = computeConditionalProbability(network, "C", "L", "B", "L");
+
+    BHCH = computeConditionalProbability(network, "B", "H", "C", "H");
+    BLCH = computeConditionalProbability(network, "B", "L", "C", "H");
+    BHCM = computeConditionalProbability(network, "B", "H", "C", "M");
+    BLCM = computeConditionalProbability(network, "B", "L", "C", "M");
+    BHCL = computeConditionalProbability(network, "B", "H", "C", "L");
+    BLCL = computeConditionalProbability(network, "B", "L", "C", "L");
+
     auto stopConditioning = chrono::high_resolution_clock::now(); // end the timer for conditional probabilities
 
 

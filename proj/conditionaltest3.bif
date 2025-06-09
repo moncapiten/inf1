@@ -10,7 +10,7 @@ variable B {
 }
 
 variable C {
-  type discrete [ 3 ] { High, Medium, Low };
+  type discrete [ 3 ] { H, M, L };
 }
 
 probability ( A ) { 
