@@ -105,12 +105,16 @@ double computeJointProbability(BayesianNetwork& net,
 double computeConditionalProbability(BayesianNetwork& net,
                                      const string& A, const string& a,
                                      const string& B, const string& b) {
-    // 0. Check if nodes exist and if states are valid
+    // 0. Check if the network is valid, if the nodes exist and if states are valid
+    if (net.getSubstitutionIndeces().empty()) throw invalid_argument("Network is empty.");
+
     if (net.getSubstitutionIndeces().find(A) == net.getSubstitutionIndeces().end()) throw invalid_argument("Node " + A + " not found in the network.");
     if (net.getSubstitutionIndeces().find(B) == net.getSubstitutionIndeces().end()) throw invalid_argument("Node " + A + " or " + B + " not found in the network.");
 
     if (find(net.getNode_name(A).states.begin(), net.getNode_name(A).states.end(), a) == net.getNode_name(A).states.end()) throw invalid_argument("State " + a + " not found in node " + A);
     if (find(net.getNode_name(B).states.begin(), net.getNode_name(B).states.end(), b) == net.getNode_name(B).states.end()) throw invalid_argument("State " + b + " not found in node " + B);
+
+    
 
     // 1. Numerator: P(A = a, B = b)
     unordered_map<string, string> base = {{A, a}, {B, b}};
