@@ -9,7 +9,7 @@ using namespace std;
 int main() {
     Parser parser;
     
-    parser.registerCommand("marginalize", [&parser](const vector<string>& args) {
+    parser.registerCommand("marg", [&parser](const vector<string>& args) {
         if (args.size() != 1 || parser.network.size() == 0) {
             cout << "Usage: marginalize\n";
             return;
@@ -18,8 +18,6 @@ int main() {
         cout << "\n";
     });
 
-
-    // ADD MARGINALIZATION CHECK, EVERY NODE IN THE NETWORK MUST BE MARGINALIZED, THERE COULD BE PROBLEM IF IS ASKED THE COND OF TWO ORPHAN NODES, TBD BUT VERY IMPORTRTANT, ALSO APPLIES TO JOINT PROBABILITY
     parser.registerCommand("cond", [&parser](const vector<string>& args) {
         if (args.size() != 5) {
             cout << "Usage: cond <A> <a> <B> <b>\n";
@@ -45,6 +43,8 @@ int main() {
             cout << "Error: " << e.what() << "\n";
         }
     });
+
+
 
     // Start interactive mode
     parser.runInteractiveMode();
