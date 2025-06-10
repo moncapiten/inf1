@@ -80,7 +80,7 @@ ostream& operator<<(ostream& os, const BayesianNode& node) {
 }
 
 
-// Overload for a vector of nodes
+// Overload for the whole BayesianNetwork
 ostream& operator<<(ostream& os, const BayesianNetwork& network) {
     os << "Bayesian Network: " << network.name << "\n";
     os << "Number of nodes: " << network.size() << "\n";

@@ -3,8 +3,7 @@
 using namespace std;
 
 
-// Just functions call, from public to privaate, nothing special
-
+// Just functions call, from public to private, nothing special
 void Parser::parse(const string& input) {
     filename = input; // set the filename to the input
     streamer(filename); // call the streamer function to read the file
@@ -33,11 +32,10 @@ void Parser::streamer(const string& filename) {
     string line;
     size_t line_num = 1;
     while (getline(file, line)) {
-        tokenizer(line);  // Line-aware processing
-//        tokenizer(line, line_num++);  // Line-aware processing
+        tokenizer(line); // line by line processing
     }
 
-    // Handle read errors (EOF doesn't set failbit)
+    // Handle read errors
     if (file.bad()) {
         throw runtime_error("PARSER ERROR - I/O error reading: " + filename);
     }
@@ -48,9 +46,9 @@ void Parser::streamer(const string& filename) {
 }
 
 
-
-
-
+// helper function to check if the character is a valid token character
+// uses a static array for performance, it just checks if the place in the array coincident
+// with the character in check is true or false and returns that
 bool Parser::isTokenChar(char c) {
     static const array<bool, 256> tokenTable = [] {
         array<bool, 256> table{};
@@ -121,7 +119,6 @@ void Parser::grouper( vector<vector<string>>& groups, const string& token){
 // maybe add check for comments?
 
 // --> parenthesis check is done in grouper before the translator is called
-
 
 void Parser::translator(vector<string>& group){
 
@@ -206,6 +203,8 @@ void Parser::translator(vector<string>& group){
                         continue;
                     } else {
                         if( owner == "" ){
+//                            if (net.getSubstitutionIndeces().find(A) == net.getSubstitutionIndeces().end()) throw invalid_argument("Node " + A + " not found in the network."); check if the owner exists? 
+//                            as it stands now i am afrad that if i had a bif file with CPT of a node that never was created the parser would error in incorrect ways
                             owner = *j; // get the owner of the node
                         } else {
                             try{
@@ -287,36 +286,6 @@ void Parser::translator(vector<string>& group){
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 void Parser::interpret(const string& input) {
     commandGroups.clear(); // Clear previous command groups
     
@@ -359,12 +328,14 @@ void Parser::commandGrouper(vector<vector<string>>& groups, const string& token)
     }
 }
 
+// Execute the command based on the first token
 void Parser::executeCommand(const vector<string>& commandTokens) {
     if (commandTokens.empty()) return;
     
     string command = commandTokens[0];
     auto it = commands.find(command);
     
+    // if the command is found, execute it with the rest of the tokens as arguments( could do rest - the first, which is just the command name, changes little in the grand scheme)
     if (it != commands.end()) {
         it->second(commandTokens);
     } else {
@@ -373,7 +344,8 @@ void Parser::executeCommand(const vector<string>& commandTokens) {
     }
 }
 
-void Parser::registerCommand(const string& name, function<void(const std::vector<std::string>&)> handler) {
+// just adds the commands to the map with their handlers( handler have to match the signature: void(const vector<string>&) )
+void Parser::registerCommand(const string& name, function<void(const vector<string>&)> handler) {
     commands[name] = handler;
 }
 
@@ -440,9 +412,6 @@ void Parser::runInteractiveMode() {
         } catch (const exception& e) {
             cout << "Error retrieving node: " << e.what() << "\n";
         }
-//        cout << "Network nodes:\n";
-        // Add code to iterate through your network nodes
-        // This depends on your BayesianNetwork implementation
     });
     
     // Interactive loop
@@ -451,6 +420,7 @@ void Parser::runInteractiveMode() {
     cout << "Type 'help' for commands, 'quit' to exit\n";
     
     while (true) {
+        // arrow cause it's way cooler than just ">>"
         cout << "==> ";
         getline(cin, input);
         if (!input.empty()) {

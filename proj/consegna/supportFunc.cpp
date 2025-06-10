@@ -2,8 +2,8 @@
 
 using namespace std;
 
-
-std::ostream& operator<<(std::ostream& os, const std::vector<double>& vec) {
+// just a bunch of overloads for printing vectors of different types
+ostream& operator<<(std::ostream& os, const std::vector<double>& vec) {
     os << "[";
     for (size_t i = 0; i < vec.size(); ++i) {
         os << vec[i];
@@ -12,7 +12,7 @@ std::ostream& operator<<(std::ostream& os, const std::vector<double>& vec) {
     return os << "]";
 }
 
-std::ostream& operator<<(std::ostream& os, const std::vector<int>& vec) {
+ostream& operator<<(std::ostream& os, const std::vector<int>& vec) {
     os << "[";
     for (size_t i = 0; i < vec.size(); ++i) {
         os << vec[i];
@@ -20,7 +20,6 @@ std::ostream& operator<<(std::ostream& os, const std::vector<int>& vec) {
     }
     return os << "]";
 }
-
 
 ostream& operator<<(ostream& os, const vector<std::string>& vec) {
     os << "[";
@@ -31,7 +30,7 @@ ostream& operator<<(ostream& os, const vector<std::string>& vec) {
     return os << "]";
 }
 
-
+// Creating Stack class used to check parenthesis balance
 template <typename T>
 void Stack<T>::push(const T & x){
     data.push_back(x);
@@ -59,6 +58,8 @@ auto Stack<T>::size(){
     return data.size();
 }
 
+// Actual check of parenthesis balance
+// stack usedd to hold and remove parentheses
 bool checkParenthesis(const vector<string>& v){
     
     string s = ""; // string to hold the concatenated tokens

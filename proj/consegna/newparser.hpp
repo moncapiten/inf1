@@ -58,14 +58,14 @@ public:
     // outputs the Bayesian network object
     BayesianNetwork& getNetwork();
 
+    // interpreter to process commands
+    void interpret(const string& input);
 
+    // register a command with its handler
+    void registerCommand(const string& name, function<void(const vector<string>&)> handler);
 
-
-
-
-
-    void interpret(const std::string& input);
-    void registerCommand(const std::string& name, std::function<void(const std::vector<std::string>&)> handler);
+    // run in order to use the program interactively
+    // not necessary but works mighty fine
     void runInteractiveMode();
 
 private:
@@ -87,43 +87,17 @@ private:
     void translator(vector<string>& group);
 
 
+    // command map to hold commands and their handlers
+    map<string, function<void(const vector<string>&)>> commands;
+    vector<vector<string>> commandGroups; // separate from dividedGroups
 
-    map<std::string, std::function<void(const std::vector<std::string>&)>> commands;
-    vector<std::vector<std::string>> commandGroups; // separate from dividedGroups
-    
-    void commandGrouper(std::vector<std::vector<std::string>>& groups, const std::string& token);
-    void executeCommand(const std::vector<std::string>& commandTokens);
+    // commandGrouper, groups tokens into a single command group
+    void commandGrouper(vector<vector<string>>& groups, const string& token);
+
+    // executeCommand, executes the command based on the first token
+    void executeCommand(const vector<string>& commandTokens);
 
 
 };
-
-
-
-
-
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #endif // PARSER_HPP

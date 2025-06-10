@@ -8,13 +8,12 @@
 #include <cctype>
 
 
-
 using namespace std;
 
 
-std::ostream& operator<<(std::ostream& os, const std::vector<double>& vec);
-std::ostream& operator<<(std::ostream& os, const std::vector<int>& vec);
-ostream& operator<<(ostream& os, const vector<std::string>& vec);
+ostream& operator<<(ostream& os, const vector<double>& vec);
+ostream& operator<<(ostream& os, const vector<int>& vec);
+ostream& operator<<(ostream& os, const vector<string>& vec);
 
 bool checkParenthesis(const vector<string>& v);
 

@@ -1,6 +1,7 @@
 #include "conditionalizer.hpp"
 
 // Helper to get index of a state
+// just returns the index of the state in the node's states vector
 int stateIndex(const BayesianNode& node, const string& state) {
     auto it = find(node.states.begin(), node.states.end(), state);
     if (it == node.states.end()) throw invalid_argument("State " + state + " not found in node: " + node.name);
@@ -12,10 +13,13 @@ int computeCPTIndex(const BayesianNode& node,
                     const BayesianNetwork& net,
                     const unordered_map<string, string>& assignment) {
     const int numStates = node.states.size();
-    int index = 0;
-    int multiplier = 1;
+    int index = 0; // index that will be returned
+    int multiplier = 1; // how much each parent state contributes to the index
 
-    // For each parent in **left-to-right** order
+    // For each parent in **left-to-right** order the index is computed by
+    // finding the index of the state the parent is in, multiplying it by the
+    // multiplier, and adding it to the index.
+    // it is basically like counting in a number system where every digit has a different base
     for (int i = 0; i < node.parents.size(); ++i){
 //    for (int i = node.parents.size() - 1; i >= 0; --i) {
         const BayesianNode& parent = net.getNode_ID(node.parents[i]);
@@ -24,12 +28,15 @@ int computeCPTIndex(const BayesianNode& node,
         multiplier *= parent.states.size();
     }
 
-    // Now scale for node's own state (like interleaving)
+    // Now scale for node's own state
     int nodeStateIndex = stateIndex(node, assignment.at(node.name));
     return index * numStates + nodeStateIndex;
 }
 
 // Recursively compute joint probability for an assignment
+// example Rain -> Sprinkler -> Grass
+// P( Rain = true, Sprinkler = false, Grass = wet ) = 
+// 1 * P(Rain = true) * P(Sprinkler = false | Rain = true) * P(Grass = wet | Rain = true, Sprinkler = false)
 double computeJointProb(const BayesianNetwork& net,
                         const unordered_map<string, string>& assignment,
                         unordered_map<string, int> cache) {
@@ -64,7 +71,7 @@ void enumerateAllAssignments(const BayesianNetwork& net,
     }
 
     const string& nodeName = nodes[i].name;
-    if (partial.count(nodeName)) {
+    if (partial.count(nodeName)) { // partial.count(nodeName) = 1 if nodeName is in partial, 0 otherwise
         enumerateAllAssignments(net, partial, out, i + 1);
     } else {
         for (const auto& state : nodes[i].states) {
@@ -127,6 +134,8 @@ double computeConditionalProbability(BayesianNetwork& net,
     checkComputability(net, A, a, B, b);
 
     // 1. Numerator: P(A = a, B = b)
+    // calculated by enumerating all full assignments that include A = a and B = b
+    // and summing their joint probabilities
     unordered_map<string, string> base = {{A, a}, {B, b}};
     vector<unordered_map<string, string>> fullAssignments;
     enumerateAllAssignments(net, base, fullAssignments);
@@ -136,6 +145,9 @@ double computeConditionalProbability(BayesianNetwork& net,
         joint += computeJointProb(net, assign);
 
     // 2. Denominator: P(B = b)
+    // calculated by enumerating all assignments that include B = b
+    // and summing their joint probabilities
+    // ...again
     unordered_map<string, string> bOnly = {{B, b}};
     vector<unordered_map<string, string>> bAssignments;
     enumerateAllAssignments(net, bOnly, bAssignments);
@@ -144,7 +156,9 @@ double computeConditionalProbability(BayesianNetwork& net,
     for (const auto& assign : bAssignments)
         marginalB += computeJointProb(net, assign);
 
-    if (marginalB == 0) return 0;
+    // 3. Return the conditional probability P(A = a | B = b) = P(A = a, B = b) / P(B = b)
+    // just Bayes rule with joint instead of P(B|A) * P(A)
+    if (marginalB < 1e-6) return 0;
     return joint / marginalB;
 }
 
