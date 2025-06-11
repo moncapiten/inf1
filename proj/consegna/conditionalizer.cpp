@@ -135,7 +135,7 @@ double computeJointProbability(BayesianNetwork& net,
 // therefore O( n * m^(n-2) ) + O( n * m^(n-1) ) = O( n * m^(n-1) )
 // ignoring the one and the O(n) factor, we have O( m^n ) as the final complexity
 // with m being the average number of states per node and n the number of nodes in the network
-double computeConditionalProbability(BayesianNetwork& net,
+double oldComputeConditionalProbability(BayesianNetwork& net,
                                      const string& A, const string& a,
                                      const string& B, const string& b) {
     // 0. Check if the network is valid, if the nodes exist and if states are valid
@@ -176,7 +176,7 @@ double computeConditionalProbability(BayesianNetwork& net,
 // its a bit more efficient cause we do not enumerate all assignaments twice
 // complexity is still O( m^n ) but we reach it by only enumerating once
 // and checking if it can be used for both numerator and denominator
-double newComputeConditionalProbability(BayesianNetwork& net,
+double computeConditionalProbability(BayesianNetwork& net,
                                      const string& A, const string& a,
                                      const string& B, const string& b) {
     // 0. Check if the network is valid, if the nodes exist and if states are valid

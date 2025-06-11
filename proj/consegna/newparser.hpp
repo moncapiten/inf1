@@ -15,6 +15,8 @@
 #include <array>
 #include <map>
 #include <functional>
+#include <chrono>
+#include <format>
 
 #include "supportFunc.hpp"
 #include "nodes.hpp"
@@ -29,7 +31,6 @@ class Parser {
 public:
     Parser() {}
     BayesianNetwork network; // Bayesian network object to hold the nodes
-
 
     // parse the input file
     void parse(const string& input);
@@ -64,6 +65,9 @@ public:
     // register a command with its handler
     void registerCommand(const string& name, function<void(const vector<string>&)> handler);
 
+    // function to talk to the user and also log the response if so enabled
+    void respond(const string& response, bool toConsole = true);
+
     // run in order to use the program interactively
     // not necessary but works mighty fine
     void runInteractiveMode();
@@ -90,6 +94,8 @@ private:
     // command map to hold commands and their handlers
     map<string, function<void(const vector<string>&)>> commands;
     vector<vector<string>> commandGroups; // separate from dividedGroups
+    bool logging = false; // flag to indicate if logging is enabled
+    ofstream log; // log file stream
 
     // commandGrouper, groups tokens into a single command group
     void commandGrouper(vector<vector<string>>& groups, const string& token);

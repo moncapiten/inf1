@@ -281,14 +281,29 @@ void Parser::translator(vector<string>& group){
 
 
 
+// FROM HERE ON OUT ITS JUST THE INTERPRETER AND COMMANDS
 
-
+// Function to respond to the user, either to console or log file
+void Parser::respond(const string& response, bool toConsole) {
+    if (toConsole) {
+        cout << response; // Output the response to the console
+    }
+    if (logging && log.is_open()) {
+//        if (toConsole) log << "\t";
+        log << response; // Log the response if logging is enabled
+        log.flush();
+    }
+}
 
 
 
 void Parser::interpret(const string& input) {
     commandGroups.clear(); // Clear previous command groups
     
+
+    // log the input if logging is enabled
+    respond(input + "\n", false);
+
     // Reuse your existing tokenizer, but with commandGroups
     string token;
     for (size_t i = 0; i < input.size(); ++i) {
@@ -328,6 +343,7 @@ void Parser::commandGrouper(vector<vector<string>>& groups, const string& token)
     }
 }
 
+
 // Execute the command based on the first token
 void Parser::executeCommand(const vector<string>& commandTokens) {
     if (commandTokens.empty()) return;
@@ -339,8 +355,9 @@ void Parser::executeCommand(const vector<string>& commandTokens) {
     if (it != commands.end()) {
         it->second(commandTokens);
     } else {
-        cout << "Unknown command: " << command << endl;
-        cout << "Type 'help' for available commands." << endl;
+        // If the command is not found, output an error message
+        respond("Unknown command: " + command + "\n");
+        respond("Type 'help' for available commands.\n");
     }
 }
 
@@ -352,76 +369,111 @@ void Parser::registerCommand(const string& name, function<void(const vector<stri
 void Parser::runInteractiveMode() {
     // Register default commands
     registerCommand("help", [this](const vector<string>& args) {
-        cout << "Available commands:\n";
+        respond("Available commands:\n");
         for (const auto& cmd : commands) {
-            cout << "  " << cmd.first << "\n";
+            respond("  " + cmd.first + "\n");
         }
     });
+
+    registerCommand("log", [this](const vector<string>& args) {
+        if (args.size() != 2) {
+            respond("Usage: log <on/off>\n");
+            return;
+        }
+        if (args[1] == "on") {
+            logging = true;
+
+            auto now = std::chrono::system_clock::now();
+            auto time = std::chrono::zoned_time{"local", now};
+            std::cout << std::format("{:%Y%m%d_%H%M%S}", time) << '\n';
+
+            ofstream logFile( "log.txt");
+            log = move(logFile);
+            respond("Logging enabled\n");
+        } else if (args[1] == "off") {
+            logging = false;
+            respond("Logging disabled\n");
+            if (log.is_open()) log.close();
+        } else {
+            respond("Invalid argument. Use 'on' or 'off'.\n");
+        }
+    });
+
     
-    registerCommand("quit", [](const vector<string>& args) {
-        cout << "Goodbye Crocodile!\n";
+    registerCommand("quit", [this](const vector<string>& args) {
+        respond("Exiting interactive mode...\n\nGoodbye Crocodile!\n");
+        if (log.is_open()) {
+            log.close(); // Close the log file if it's open
+        }
         exit(0);
     });
     
     registerCommand("load", [this](const vector<string>& args) {
         if (args.size() != 2) {
-            cout << "Usage: load <filename>\n";
+            respond("Usage: load <filename>\n");
             return;
         }
         try {
             parse(args[1]); // Reuse existing parse function
             translate();    // Reuse existing translate function
-            cout << "Successfully loaded network: " << network.name << "\n";
+            respond("Successfully loaded network: " + network.name + "\n");
         } catch (const exception& e) {
-            cout << "Error loading file: " << e.what() << "\n";
+            respond("Error loading file: " + string(e.what()) + "\n");
         }
     });
     
     registerCommand("network", [this](const vector<string>& args) {
         if (network.name.empty()) {
-            cout << "No network loaded.\n";
+            respond("No network loaded.\n");
         } else {
             if (args.size() > 1 && args[1] == "-v" ) {
-                cout << network;
+                respond(to_string(network) + "\n");
             }
             else {
-                cout << "Current network: " << network.name << "\n";
-                cout << "Nodes: " << network.size() << "\n";
+                respond("Current network: " + network.name + "\n"
+                        "Marginalized: " + (network.marginalized ? "Yes" : "No") + "\n");
+                respond("Nodes: " + to_string(network.size()) + "\n");
             }
         }
     });
     
     registerCommand("node", [this](const vector<string>& args) {
         if (network.name.empty()) {
-            cout << "No network loaded.\n";
+            respond("No network loaded.\n");
             return;
         }
         if (args.size() < 2) {
-            cout << "Usage: node <node_name> or node <node_ID>\n";
+            respond("Usage: node <node_name> or node <node_ID>\n");
             return;
         }
         try {
             if (isdigit(args[1][0])) {
                 int id = stoi(args[1]);
-                cout << network.getNode_ID(id);
+                respond(to_string(network.getNode_ID(id)) + "\n");
             } else {
-                cout << network.getNode_name(args[1]);
+                respond(to_string(network.getNode_name(args[1])) + "\n");
             }
         } catch (const out_of_range& e) {
-            cout << "Node not found: " << args[1] << "\n";
+            respond("Node not found: " + args[1] + "\n");
         } catch (const exception& e) {
-            cout << "Error retrieving node: " << e.what() << "\n";
+            respond("Error retrieving node: " + string(e.what()) + "\n");
         }
     });
     
     // Interactive loop
     string input;
-    cout << "Bayesian Network Parser - Interactive Mode\n";
-    cout << "Type 'help' for commands, 'quit' to exit\n";
-    
+    respond("Welcome to the Bayesian Network Parser - Interactive Mode\n");
+    respond("Type 'help' for commands, 'quit' to exit\n");
+    if (logging) {
+        respond("Logging is enabled. Type 'log off' to disable logging.\n");
+    } else {
+        respond("Logging is disabled. Type 'log on' to enable logging.\n");
+    }
+
     while (true) {
         // arrow cause it's way cooler than just ">>"
-        cout << "==> ";
+        respond("\n==> ");
+//        cout << "==> ";
         getline(cin, input);
         if (!input.empty()) {
             interpret(input);
