@@ -12,6 +12,7 @@
 using namespace std;
 
 
+constexpr double EPSILON = 1e-6; // small value to compare floating point numbers
 
 
 struct BayesianNode {

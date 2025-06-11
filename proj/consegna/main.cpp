@@ -4,6 +4,9 @@
 #include "marginalizer.hpp"
 #include "conditionalizer.hpp"
 
+#include <iostream>
+#include <chrono>
+
 using namespace std;
 
 int main() {
@@ -44,6 +47,28 @@ int main() {
         }
     });
 
+
+    ///   YOU GOTTA CHANGE THE STANDARD ACONDITIONALIZER TO THE NEW VERSION YOU EEJIT
+    parser.registerCommand("testCond", [&parser](const vector<string>& args) {
+        if (args.size() != 1) {
+            cout << "Usage: test\n";
+            return;
+        }
+        try {
+            BayesianNode A = parser.network.getNode_ID(0);
+            BayesianNode B = parser.network.getNode_ID(parser.network.size() - 1);
+
+            cout << "P(" << A.name << "=" << A.states[0] << ", " << B.name << "=" << B.states[0] << ") = ";
+            auto start = chrono::high_resolution_clock::now();
+            double result = computeJointProbability(parser.network, A.name, A.states[0], B.name, B.states[0]);
+            auto end = chrono::high_resolution_clock::now();
+            chrono::duration<double, milli> elapsed = end - start;
+            cout << result << "\n" << "Time taken: " << elapsed.count() << " ms\n";
+
+        } catch (const exception& e) {
+            cout << "Error: " << e.what() << "\n";
+        }
+    });
 
 
     // Start interactive mode

@@ -38,8 +38,7 @@ int computeCPTIndex(const BayesianNode& node,
 // P( Rain = true, Sprinkler = false, Grass = wet ) = 
 // 1 * P(Rain = true) * P(Sprinkler = false | Rain = true) * P(Grass = wet | Rain = true, Sprinkler = false)
 double computeJointProb(const BayesianNetwork& net,
-                        const unordered_map<string, string>& assignment,
-                        unordered_map<string, int> cache) {
+                        const unordered_map<string, string>& assignment) {
     double prob = 1.0;
     for (const auto& node : net.getNodes()) {
         const string& name = node.name;
@@ -54,6 +53,7 @@ double computeJointProb(const BayesianNetwork& net,
         // Compute CPT index
 
         int idx = computeCPTIndex(node, net, assignment);
+        if( node.probabilities[idx] < EPSILON ) return 0.0; // if we have a zero probability, do not bother computing further
         prob *= node.probabilities[idx];
     }
     return prob;
@@ -127,6 +127,14 @@ double computeJointProbability(BayesianNetwork& net,
 
 
 // Main function: P(A = a | B = b)
+// temporal complexity is given by the fact that we have to enumerate all full assignaments
+// twice,  once for the numerator, where we have A = a and B = b, and once for the denominator, where we have only B = b
+// every assignaments requires O(n) to compute, and per each node i we have ki states
+// so we have O( m^(n-2) ) * O(n) = O( n * m^(n-2) ) for the numerator 
+// and O( m^(n-1) ) * O(n) = O( n * m^(n-1) ) for the denominator
+// therefore O( n * m^(n-2) ) + O( n * m^(n-1) ) = O( n * m^(n-1) )
+// ignoring the one and the O(n) factor, we have O( m^n ) as the final complexity
+// with m being the average number of states per node and n the number of nodes in the network
 double computeConditionalProbability(BayesianNetwork& net,
                                      const string& A, const string& a,
                                      const string& B, const string& b) {
@@ -158,8 +166,39 @@ double computeConditionalProbability(BayesianNetwork& net,
 
     // 3. Return the conditional probability P(A = a | B = b) = P(A = a, B = b) / P(B = b)
     // just Bayes rule with joint instead of P(B|A) * P(A)
-    if (marginalB < 1e-6) return 0;
+    if (marginalB < EPSILON) return 0;
     return joint / marginalB;
+}
+
+
+
+// test function with smarter enumeration
+// its a bit more efficient cause we do not enumerate all assignaments twice
+// complexity is still O( m^n ) but we reach it by only enumerating once
+// and checking if it can be used for both numerator and denominator
+double newComputeConditionalProbability(BayesianNetwork& net,
+                                     const string& A, const string& a,
+                                     const string& B, const string& b) {
+    // 0. Check if the network is valid, if the nodes exist and if states are valid
+    checkComputability(net, A, a, B, b);
+
+    // 1. Generate all assignments where B=b
+    unordered_map<string, string> bOnly = {{B, b}};
+    vector<unordered_map<string, string>> allBAssignments;
+    enumerateAllAssignments(net, bOnly, allBAssignments);
+    
+    double joint = 0, marginalB = 0;
+    for (const auto& assign : allBAssignments) {
+        double prob = computeJointProb(net, assign);
+        marginalB += prob;
+        
+        // Check if this assignment also has A=a
+        if (assign.at(A) == a) {
+            joint += prob;
+        }
+    }
+    
+    return marginalB < EPSILON ? 0 : joint / marginalB;
 }
 
 

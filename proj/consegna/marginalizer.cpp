@@ -109,7 +109,7 @@ void Marginalizer::marginalizeNode(BayesianNode& node) {
 
     // test to see if the probs sum to 1 - there's leeway for floating point errors
     double testSum = accumulate(sums.begin(), sums.end(), 0.0); // calculate the sum of the probabilities
-    if( abs(testSum - 1.0) > 1e-6 ){
+    if( abs(testSum - 1.0) > EPSILON ){
         throw runtime_error("MARGINALIZER ERROR - Probabilities do not sum to 1 for node: " + node.name); // throw an error if the probabilities do not sum to 1
     }
 

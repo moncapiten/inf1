@@ -5,8 +5,9 @@
 #include <numeric>
 #include <stdexcept>
 #include <vector>
-#include "nodes.hpp"
 #include <algorithm>
+
+#include "nodes.hpp"
 
 using namespace std;
 
@@ -18,7 +19,7 @@ int stateIndex(const BayesianNode& node, const string& state);
 int computeCPTIndex(const BayesianNode& node, const BayesianNetwork& net, const unordered_map<string, string>& assignment);
 
 // Recursively compute joint probability for an assignment
-double computeJointProb(const BayesianNetwork& net, const unordered_map<string, string>& assignment, unordered_map<string, int> cache = {});
+double computeJointProb(const BayesianNetwork& net, const unordered_map<string, string>& assignment);
 double computeJointProbability(BayesianNetwork& net, const string& A, const string& a, const string& B, const string& b);
 
 // Generate all consistent full assignments extending a partial one
@@ -26,6 +27,9 @@ void enumerateAllAssignments(const BayesianNetwork& net, unordered_map<string, s
 
 // Main function: P(A = a | B = b)
 double computeConditionalProbability(BayesianNetwork& net, const string& A, const string& a, const string& B, const string& b);
+
+// Main function redone slightly more efficient
+double newComputeConditionalProbability(BayesianNetwork& net, const string& A, const string& a, const string& B, const string& b);
 
 //double computeConditionalProbability(BayesianNetwork& net, const string& A, const string& a, const string& B);
 
