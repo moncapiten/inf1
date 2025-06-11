@@ -181,98 +181,100 @@ int main(){
     auto stopNewConditioning = chrono::high_resolution_clock::now(); // end the timer for conditional probabilities
 
 
+    parser.logging = true;
+    parser.log = ofstream("log/conditionalizerTest.log"); // open the log file
+    parser.respond("Conditionalizer Test\n\n"); // print the header
 
     auto startPrinting = chrono::high_resolution_clock::now(); // start the timer for printing
-    cout << "\n\n\nNETWORK:" << endl << endl; // print the nodes
-    cout << network; // print the nodes using the overloaded operator<<
-    cout << endl; // print a new line after the nodes
+    parser.respond("NETWORK:\n\n" + to_string(network) + "\n\n", true); // print the network using the overloaded operator<<
 
-    cout << "\n\nCONDITIONAL PROBABILITIES P(A | B):" << endl; // print the conditional probabilities of the nodes
-    cout << "P(A=H, B=H) = " << AHBH0 << "\t" << AHBH1 << endl; // print the conditional probabilities of the nodes
-    cout << "P(A=M, B=H) = " << AMBH0 << "\t" << AMBH1 << endl; // print the conditional probabilities of the nodes
-    cout << "P(A=L, B=H) = " << ALBH0 << "\t" << ALBH1 << endl; // print the conditional probabilities of the nodes
+    parser.respond("\n\nCONDITIONAL PROBABILITIES P(A | B):\n"); 
+    parser.respond("P(A=H, B=H) = " + to_string(AHBH0) + "\t" + to_string(AHBH1) + "\n"); 
+    parser.respond("P(A=M, B=H) = " + to_string(AMBH0) + "\t" + to_string(AMBH1) + "\n"); 
+    parser.respond("P(A=L, B=H) = " + to_string(ALBH0) + "\t" + to_string(ALBH1) + "\n"); 
 
-    cout << "P(A=H, B=L) = " << AHBL0 << "\t" << AHBL1 << endl; // print the conditional probabilities of the nodes
-    cout << "P(A=M, B=L) = " << AMBL0 << "\t" << AMBL1 << endl; // print the conditional probabilities of the nodes
-    cout << "P(A=L, B=L) = " << ALBL0 << "\t" << ALBL1 << endl; // print the conditional probabilities of the nodes
+    parser.respond("P(A=H, B=L) = " + to_string(AHBL0) + "\t" + to_string(AHBL1) + "\n"); 
+    parser.respond("P(A=M, B=L) = " + to_string(AMBL0) + "\t" + to_string(AMBL1) + "\n"); 
+    parser.respond("P(A=L, B=L) = " + to_string(ALBL0) + "\t" + to_string(ALBL1) + "\n"); 
 
-    cout << "\n\nCONDITIONAL PROBABILITIES P(B | A):" << endl; // print the conditional probabilities of the nodes
-    cout << "P(B=H, A=H) = " << BHAH0 << "\t" << BHAH1 << endl; // print the conditional probabilities of the nodes
-    cout << "P(B=L, A=H) = " << BLAH0 << "\t" << BLAH1 << endl; // print the conditional probabilities of the nodes
+    parser.respond("\n\nCONDITIONAL PROBABILITIES P(B | A):\n"); 
+    parser.respond("P(B=H, A=H) = " + to_string(BHAH0) + "\t" + to_string(BHAH1) + "\n"); 
+    parser.respond("P(B=L, A=H) = " + to_string(BLAH0) + "\t" + to_string(BLAH1) + "\n"); 
 
-    cout << "P(B=H, A=M) = " << BHAM0 << "\t" << BHAM1 << endl; // print the conditional probabilities of the nodes
-    cout << "P(B=L, A=M) = " << BLAM0 << "\t" << BLAM1 << endl; // print the conditional probabilities of the nodes
+    parser.respond("P(B=H, A=M) = " + to_string(BHAM0) + "\t" + to_string(BHAM1) + "\n"); 
+    parser.respond("P(B=L, A=M) = " + to_string(BLAM0) + "\t" + to_string(BLAM1) + "\n"); 
 
-    cout << "P(B=H, A=L) = " << BHAL0 << "\t" << BHAL1 << endl; // print the conditional probabilities of the nodes
-    cout << "P(B=L, A=L) = " << BLAL0 << "\t" << BLAL1 << endl; // print the conditional probabilities of the nodes
+    parser.respond("P(B=H, A=L) = " + to_string(BHAL0) + "\t" + to_string(BHAL1) + "\n"); 
+    parser.respond("P(B=L, A=L) = " + to_string(BLAL0) + "\t" + to_string(BLAL1) + "\n"); 
 
-    cout << "\n\nCONDITIONAL PROBABILITIES P(A | C):" << endl; // print the conditional probabilities of the nodes
-    cout << "P(A=H,C=H) = " << AHCH0 << "\t" << AHCH1 << endl; // print the conditional probabilities of the nodes
-    cout << "P(A=M,C=H) = " << AMCH0 << "\t" << AMCH1 << endl; // print the conditional probabilities of the nodes
-    cout << "P(A=L,C=H) = " << ALCH0 << "\t" << ALCH1 << endl; // print the conditional probabilities of the nodes
+    parser.respond("\n\nCONDITIONAL PROBABILITIES P(A | C):\n"); 
+    parser.respond("P(A=H, C=H) = " + to_string(AHCH0) + "\t" + to_string(AHCH1) + "\n"); 
+    parser.respond("P(A=M, C=H) = " + to_string(AMCH0) + "\t" + to_string(AMCH1) + "\n"); 
+    parser.respond("P(A=L, C=H) = " + to_string(ALCH0) + "\t" + to_string(ALCH1) + "\n"); 
 
-    cout << "P(A=H,C=M) = " << AHCM0 << "\t" << AHCM1 << endl; // print the conditional probabilities of the nodes
-    cout << "P(A=M,C=M) = " << AMCM0 << "\t" << AMCM1 << endl; // print the conditional probabilities of the nodes
-    cout << "P(A=L,C=M) = " << ALCM0 << "\t" << ALCM1 << endl; // print the conditional probabilities of the nodes
+    parser.respond("P(A=H, C=M) = " + to_string(AHCM0) + "\t" + to_string(AHCM1) + "\n"); 
+    parser.respond("P(A=M, C=M) = " + to_string(AMCM0) + "\t" + to_string(AMCM1) + "\n"); 
+    parser.respond("P(A=L, C=M) = " + to_string(ALCM0) + "\t" + to_string(ALCM1) + "\n"); 
 
-    cout << "P(A=H,C=L) = " << AHCL0 << "\t" << AHCL1 << endl; // print the conditional probabilities of the nodes
-    cout << "P(A=M,C=L) = " << AMCL0 << "\t" << AMCL1 << endl; // print the conditional probabilities of the nodes
-    cout << "P(A=L,C=L) = " << ALCL0 << "\t" << ALCL1 << endl; // print the conditional probabilities of the nodes
+    parser.respond("P(A=H, C=L) = " + to_string(AHCL0) + "\t" + to_string(AHCL1) + "\n"); 
+    parser.respond("P(A=M, C=L) = " + to_string(AMCL0) + "\t" + to_string(AMCL1) + "\n"); 
+    parser.respond("P(A=L, C=L) = " + to_string(ALCL0) + "\t" + to_string(ALCL1) + "\n"); 
 
-    cout << "\n\nCONDITIONAL PROBABILITIES P(C | A):" << endl; // print the conditional probabilities of the nodes
-    cout << "P(C=H|A=H) = " << CHAH0 << "\t" << CHAH1 << endl; // print the conditional probabilities of the nodes
-    cout << "P(C=M|A=H) = " << CHAM0 << "\t" << CHAM1 << endl; // print the conditional probabilities of the nodes
-    cout << "P(C=L|A=H) = " << CHAL0 << "\t" << CHAL1 << endl; // print the conditional probabilities of the nodes
+    parser.respond("\n\nCONDITIONAL PROBABILITIES P(C | A):\n"); 
+    parser.respond("P(C=H, A=H) = " + to_string(CHAH0) + "\t" + to_string(CHAH1) + "\n"); 
+    parser.respond("P(C=M, A=H) = " + to_string(CHAM0) + "\t" + to_string(CHAM1) + "\n"); 
+    parser.respond("P(C=L, A=H) = " + to_string(CHAL0) + "\t" + to_string(CHAL1) + "\n"); 
 
-    cout << "P(C=H|A=M) = " << CMAH0 << "\t" << CMAH1 << endl; // print the conditional probabilities of the nodes
-    cout << "P(C=M|A=M) = " << CMAM0 << "\t" << CMAM1 << endl; // print the conditional probabilities of the nodes
-    cout << "P(C=L|A=M) = " << CMAL0 << "\t" << CMAL1 << endl; // print the conditional probabilities of the nodes
+    parser.respond("P(C=H, A=M) = " + to_string(CMAH0) + "\t" + to_string(CMAH1) + "\n"); 
+    parser.respond("P(C=M, A=M) = " + to_string(CMAM0) + "\t" + to_string(CMAM1) + "\n"); 
+    parser.respond("P(C=L, A=M) = " + to_string(CMAL0) + "\t" + to_string(CMAL1) + "\n"); 
 
-    cout << "P(C=H|A=L) = " << CLAH0 << "\t" << CLAH1 << endl; // print the conditional probabilities of the nodes
-    cout << "P(C=M|A=L) = " << CLAM0 << "\t" << CLAM1 << endl; // print the conditional probabilities of the nodes
-    cout << "P(C=L|A=L) = " << CLAL0 << "\t" << CLAL1 << endl; // print the conditional probabilities of the nodes
+    parser.respond("P(C=H, A=L) = " + to_string(CLAH0) + "\t" + to_string(CLAH1) + "\n"); 
+    parser.respond("P(C=M, A=L) = " + to_string(CLAM0) + "\t" + to_string(CLAM1) + "\n"); 
+    parser.respond("P(C=L, A=L) = " + to_string(CLAL0) + "\t" + to_string(CLAL1) + "\n"); 
 
-    cout << "\n\nCONDITIONAL PROBABILITIES P(C | B):" << endl; // print the conditional probabilities of the nodes
-    cout << "P(C=H|B=H) = " << CHBH0 << "\t" << CHBH1 << endl; // print the conditional probabilities of the nodes
-    cout << "P(C=M|B=H) = " << CMBH0 << "\t" << CMBH1 << endl; // print the conditional probabilities of the nodes
-    cout << "P(C=L|B=H) = " << CLBH0 << "\t" << CLBH1 << endl; // print the conditional probabilities of the nodes
+    parser.respond("\n\nCONDITIONAL PROBABILITIES P(C | B):\n"); 
+    parser.respond("P(C=H, B=H) = " + to_string(CHBH0) + "\t" + to_string(CHBH1) + "\n"); 
+    parser.respond("P(C=M, B=H) = " + to_string(CMBH0) + "\t" + to_string(CMBH1) + "\n"); 
+    parser.respond("P(C=L, B=H) = " + to_string(CLBH0) + "\t" + to_string(CLBH1) + "\n"); 
 
-    cout << "P(C=H|B=L) = " << CHBL0 << "\t" << CHBL1 << endl; // print the conditional probabilities of the nodes
-    cout << "P(C=M|B=L) = " << CMBL0 << "\t" << CMBL1 << endl; // print the conditional probabilities of the nodes
-    cout << "P(C=L|B=L) = " << CLBL0 << "\t" << CLBL1 << endl; // print the conditional probabilities of the nodes
+    parser.respond("P(C=H, B=L) = " + to_string(CHBL0) + "\t" + to_string(CHBL1) + "\n"); 
+    parser.respond("P(C=M, B=L) = " + to_string(CMBL0) + "\t" + to_string(CMBL1) + "\n"); 
+    parser.respond("P(C=L, B=L) = " + to_string(CLBL0) + "\t" + to_string(CLBL1) + "\n"); 
 
-    cout << "\n\nCONDITIONAL PROBABILITIES P(B | C):" << endl; // print the conditional probabilities of the nodes
-    cout << "P(B=H|C=H) = " << BHCH0 << "\t" << BHCH1 << endl; // print the conditional probabilities of the nodes
-    cout << "P(B=L|C=H) = " << BLCH0 << "\t" << BLCH1 << endl; // print the conditional probabilities of the nodes
+    parser.respond("\n\nCONDITIONAL PROBABILITIES P(B | C):\n"); 
+    parser.respond("P(B=H, C=H) = " + to_string(BHCH0) + "\t" + to_string(BHCH1) + "\n"); 
+    parser.respond("P(B=L, C=H) = " + to_string(BLCH0) + "\t" + to_string(BLCH1) + "\n"); 
 
-    cout << "P(B=H|C=M) = " << BHCM0 << "\t" << BHCM1 << endl; // print the conditional probabilities of the nodes
-    cout << "P(B=L|C=M) = " << BLCM0 << "\t" << BLCM1 << endl; // print the conditional probabilities of the nodes
+    parser.respond("P(B=H, C=M) = " + to_string(BHCM0) + "\t" + to_string(BHCM1) + "\n"); 
+    parser.respond("P(B=L, C=M) = " + to_string(BLCM0) + "\t" + to_string(BLCM1) + "\n"); 
 
-    cout << "P(B=H|C=L) = " << BHCL0 << "\t" << BHCL1 << endl; // print the conditional probabilities of the nodes
-    cout << "P(B=L|C=L) = " << BLCL0 << "\t" << BLCL1 << endl; // print the conditional probabilities of the nodes
+    parser.respond("P(B=H, C=L) = " + to_string(BHCL0) + "\t" + to_string(BHCL1) + "\n"); 
+    parser.respond("P(B=L, C=L) = " + to_string(BLCL0) + "\t" + to_string(BLCL1) + "\n"); 
 
     auto endPrinting = chrono::high_resolution_clock::now(); // end the timer for printing
 
 
 
 
-    chrono::duration<double, milli> parsingDuration = endParsing - startParsing; // calculate the duration
-    chrono::duration<double, milli> translationDuration = endTranslation - startTranslation; // calculate the duration
-    chrono::duration<double, milli> duration = endMarginalization - startMarginalization; // calculate the duration
-    chrono::duration<double, milli> oldConditioningDuration = stopOldConditioning - startOldConditioning; // calculate the duration for conditional probabilities
-    chrono::duration<double, milli> conditioningDuration = stopNewConditioning - startNewConditioning; // calculate the duration for conditional probabilities
-    chrono::duration<double, milli> printingDuration = endPrinting - startPrinting; // calculate the duration for printing
-    cout << "\n\n\n"; // print a new line
-    cout << "Parsing took: " << parsingDuration.count() << " ms" << endl; // print the duration
-    cout << "Translation took: " << translationDuration.count() << " ms" << endl; // print the duration
-    cout << "Marginalization took: " << duration.count() << " ms" << endl; // print the duration
-    cout << "Old Conditioner took: " << oldConditioningDuration.count() << " ms" << endl; // print the duration for conditional probabilities
-    cout << "New Conditioner took: " << conditioningDuration.count() << " ms" << endl; // print the duration for conditional probabilities
-    cout << "Printing took: " << printingDuration.count() << " ms" << endl; // print the duration for printing
+    chrono::duration<double, milli> parsingDuration = endParsing - startParsing; 
+    chrono::duration<double, milli> translationDuration = endTranslation - startTranslation; 
+    chrono::duration<double, milli> duration = endMarginalization - startMarginalization; 
+    chrono::duration<double, milli> oldConditioningDuration = stopOldConditioning - startOldConditioning;
+    chrono::duration<double, milli> conditioningDuration = stopNewConditioning - startNewConditioning;
+    chrono::duration<double, milli> printingDuration = endPrinting - startPrinting;
 
-    cout << "\n\nThat's all folks!" << endl; // print the end message
+    parser.respond("\n\n\n");
+    parser.respond("Parsing took: " + to_string(parsingDuration.count()) + " ms\n");
+    parser.respond("Translation took: " + to_string(translationDuration.count()) + " ms\n");
+    parser.respond("Marginalization took: " + to_string(duration.count()) + " ms\n");
+    parser.respond("Old Conditioner took: " + to_string(oldConditioningDuration.count()) + " ms\n");
+    parser.respond("New Conditioner took: " + to_string(conditioningDuration.count()) + " ms\n");
+    parser.respond("Printing took: " + to_string(printingDuration.count()) + " ms\n");
 
+    parser.log.close(); // close the log file
 
+    parser.respond("\n\nThat's all folks!\n");
 
     return 0;
 }

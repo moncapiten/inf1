@@ -15,8 +15,6 @@
 #include <array>
 #include <map>
 #include <functional>
-#include <chrono>
-#include <format>
 
 #include "supportFunc.hpp"
 #include "nodes.hpp"
@@ -59,6 +57,12 @@ public:
     // outputs the Bayesian network object
     BayesianNetwork& getNetwork();
 
+
+    //COMMAND INTERPRETER
+
+    bool logging = false; // flag to indicate if logging is enabled
+    ofstream log; // log file stream
+
     // interpreter to process commands
     void interpret(const string& input);
 
@@ -94,8 +98,6 @@ private:
     // command map to hold commands and their handlers
     map<string, function<void(const vector<string>&)>> commands;
     vector<vector<string>> commandGroups; // separate from dividedGroups
-    bool logging = false; // flag to indicate if logging is enabled
-    ofstream log; // log file stream
 
     // commandGrouper, groups tokens into a single command group
     void commandGrouper(vector<vector<string>>& groups, const string& token);

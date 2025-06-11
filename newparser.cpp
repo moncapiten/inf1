@@ -383,11 +383,7 @@ void Parser::runInteractiveMode() {
         if (args[1] == "on") {
             logging = true;
 
-            auto now = std::chrono::system_clock::now();
-            auto time = std::chrono::zoned_time{"local", now};
-            std::cout << std::format("{:%Y%m%d_%H%M%S}", time) << '\n';
-
-            ofstream logFile( "log.txt");
+            ofstream logFile("log/" + getCurrentTimestamp() + "_log.txt");
             log = move(logFile);
             respond("Logging enabled\n");
         } else if (args[1] == "off") {
