@@ -26,10 +26,10 @@ double computeJointProbability(BayesianNetwork& net, const string& A, const stri
 void enumerateAllAssignments(const BayesianNetwork& net, unordered_map<string, string>& partial, vector<unordered_map<string, string>>& out, size_t i = 0);
 
 // Main function: P(A = a | B = b)
-double computeConditionalProbability(BayesianNetwork& net, const string& A, const string& a, const string& B, const string& b);
+double oldComputeConditionalProbability(BayesianNetwork& net, const string& A, const string& a, const string& B, const string& b);
 
 // Main function redone slightly more efficient
-double newComputeConditionalProbability(BayesianNetwork& net, const string& A, const string& a, const string& B, const string& b);
+double computeConditionalProbability(BayesianNetwork& net, const string& A, const string& a, const string& B, const string& b);
 
 //double computeConditionalProbability(BayesianNetwork& net, const string& A, const string& a, const string& B);
 

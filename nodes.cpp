@@ -91,3 +91,48 @@ ostream& operator<<(ostream& os, const BayesianNetwork& network) {
     }
     return os;
 }
+
+
+
+string to_string(const BayesianNode& node) {
+    ostringstream os;
+    os << "Node: " << node.name << " alias " << node.ID << '\n';
+
+    os << "  Parents: [";
+    for (const auto& p : node.parents) os << " " << p << " ";
+    os << "]\n";
+
+    os << "  Children: [ ";
+    for (const auto& c : node.children) os << c << " ";
+    os << "]\n";
+
+    os << "  States: [ ";
+    for (const auto& s : node.states) os << s << " ";
+    os << "]\n";
+
+    os << "  Flattened CPT: ";
+    for (const auto& prob : node.probabilities) os << prob << ' ';
+    os << "\n";
+
+    os << "  Pure Probabilities: ";
+    for (const auto& prob : node.pureProb) os << prob << ' ';
+    auto sum = std::accumulate(node.pureProb.begin(), node.pureProb.end(), 0.0);
+    os << "  sum: " << sum << "\n";
+
+    return os.str();
+}
+
+string to_string(const BayesianNetwork& network) {
+    ostringstream os;
+    os << "Bayesian Network: " << network.name << "\n";
+    os << "Number of nodes: " << network.size() << "\n";
+    os << "Marginalized: " << (network.marginalized ? "Yes" : "No") << "\n";
+    os << "Nodes:\n\n";
+    for (const auto& node : network.getNodes()) {
+        os << to_string(node) << '\n';
+    }
+    return os.str();
+}
+
+
+

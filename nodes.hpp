@@ -8,6 +8,7 @@
 #include <queue>
 #include <iterator>
 #include <numeric>
+#include <sstream>
 
 using namespace std;
 
@@ -85,7 +86,9 @@ ostream& operator<<(ostream& os, const BayesianNode& node);
 
 ostream& operator<<(ostream& os, const BayesianNetwork& network);
 
+std::string to_string(const BayesianNode& node);
 
+std::string to_string(const BayesianNetwork& network);
 
 
 

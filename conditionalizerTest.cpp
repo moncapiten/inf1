@@ -78,105 +78,105 @@ int main(){
               BHCL1, BLCL1;
 
     auto startOldConditioning = chrono::high_resolution_clock::now(); // start the timer for conditional probabilities
-    AHBH0 = computeConditionalProbability(network, "A", "H", "B", "H");
-    AMBH0 = computeConditionalProbability(network, "A", "M", "B", "H");
-    ALBH0 = computeConditionalProbability(network, "A", "L", "B", "H");
-    AHBL0 = computeConditionalProbability(network, "A", "H", "B", "L");
-    AMBL0 = computeConditionalProbability(network, "A", "M", "B", "L");
-    ALBL0 = computeConditionalProbability(network, "A", "L", "B", "L");
+    AHBH0 =oldComputeConditionalProbability(network, "A", "H", "B", "H");
+    AMBH0 =oldComputeConditionalProbability(network, "A", "M", "B", "H");
+    ALBH0 =oldComputeConditionalProbability(network, "A", "L", "B", "H");
+    AHBL0 =oldComputeConditionalProbability(network, "A", "H", "B", "L");
+    AMBL0 =oldComputeConditionalProbability(network, "A", "M", "B", "L");
+    ALBL0 =oldComputeConditionalProbability(network, "A", "L", "B", "L");
 
-    BHAH0 = computeConditionalProbability(network, "B", "H", "A", "H");
-    BLAH0 = computeConditionalProbability(network, "B", "L", "A", "H");
-    BHAM0 = computeConditionalProbability(network, "B", "H", "A", "M");
-    BLAM0 = computeConditionalProbability(network, "B", "L", "A", "M");
-    BHAL0 = computeConditionalProbability(network, "B", "H", "A", "L");
-    BLAL0 = computeConditionalProbability(network, "B", "L", "A", "L");
+    BHAH0 =oldComputeConditionalProbability(network, "B", "H", "A", "H");
+    BLAH0 =oldComputeConditionalProbability(network, "B", "L", "A", "H");
+    BHAM0 =oldComputeConditionalProbability(network, "B", "H", "A", "M");
+    BLAM0 =oldComputeConditionalProbability(network, "B", "L", "A", "M");
+    BHAL0 =oldComputeConditionalProbability(network, "B", "H", "A", "L");
+    BLAL0 =oldComputeConditionalProbability(network, "B", "L", "A", "L");
 
-    AHCH0 = computeConditionalProbability(network, "A", "H", "C", "H");
-    AMCH0 = computeConditionalProbability(network, "A", "M", "C", "H");
-    ALCH0 = computeConditionalProbability(network, "A", "L", "C", "H");
-    AHCM0 = computeConditionalProbability(network, "A", "H", "C", "M");
-    AMCM0 = computeConditionalProbability(network, "A", "M", "C", "M");
-    ALCM0 = computeConditionalProbability(network, "A", "L", "C", "M");
-    AHCL0 = computeConditionalProbability(network, "A", "H", "C", "L");
-    AMCL0 = computeConditionalProbability(network, "A", "M", "C", "L");
-    ALCL0 = computeConditionalProbability(network, "A", "L", "C", "L");
+    AHCH0 =oldComputeConditionalProbability(network, "A", "H", "C", "H");
+    AMCH0 =oldComputeConditionalProbability(network, "A", "M", "C", "H");
+    ALCH0 =oldComputeConditionalProbability(network, "A", "L", "C", "H");
+    AHCM0 =oldComputeConditionalProbability(network, "A", "H", "C", "M");
+    AMCM0 =oldComputeConditionalProbability(network, "A", "M", "C", "M");
+    ALCM0 =oldComputeConditionalProbability(network, "A", "L", "C", "M");
+    AHCL0 =oldComputeConditionalProbability(network, "A", "H", "C", "L");
+    AMCL0 =oldComputeConditionalProbability(network, "A", "M", "C", "L");
+    ALCL0 =oldComputeConditionalProbability(network, "A", "L", "C", "L");
 
-    CHAH0 = computeConditionalProbability(network, "C", "H", "A", "H");
-    CHAM0 = computeConditionalProbability(network, "C", "H", "A", "M");
-    CHAL0 = computeConditionalProbability(network, "C", "H", "A", "L");
-    CMAH0 = computeConditionalProbability(network, "C", "M", "A", "H");
-    CMAM0 = computeConditionalProbability(network, "C", "M", "A", "M");
-    CMAL0 = computeConditionalProbability(network, "C", "M", "A", "L");
-    CLAH0 = computeConditionalProbability(network, "C", "L", "A", "H");
-    CLAM0 = computeConditionalProbability(network, "C", "L", "A", "M");
-    CLAL0 = computeConditionalProbability(network, "C", "L", "A", "L");
+    CHAH0 =oldComputeConditionalProbability(network, "C", "H", "A", "H");
+    CHAM0 =oldComputeConditionalProbability(network, "C", "H", "A", "M");
+    CHAL0 =oldComputeConditionalProbability(network, "C", "H", "A", "L");
+    CMAH0 =oldComputeConditionalProbability(network, "C", "M", "A", "H");
+    CMAM0 =oldComputeConditionalProbability(network, "C", "M", "A", "M");
+    CMAL0 =oldComputeConditionalProbability(network, "C", "M", "A", "L");
+    CLAH0 =oldComputeConditionalProbability(network, "C", "L", "A", "H");
+    CLAM0 =oldComputeConditionalProbability(network, "C", "L", "A", "M");
+    CLAL0 =oldComputeConditionalProbability(network, "C", "L", "A", "L");
 
-    CHBH0 = computeConditionalProbability(network, "C", "H", "B", "H");
-    CMBH0 = computeConditionalProbability(network, "C", "M", "B", "H");
-    CLBH0 = computeConditionalProbability(network, "C", "L", "B", "H");
-    CHBL0 = computeConditionalProbability(network, "C", "H", "B", "L");
-    CMBL0 = computeConditionalProbability(network, "C", "M", "B", "L");
-    CLBL0 = computeConditionalProbability(network, "C", "L", "B", "L");
+    CHBH0 =oldComputeConditionalProbability(network, "C", "H", "B", "H");
+    CMBH0 =oldComputeConditionalProbability(network, "C", "M", "B", "H");
+    CLBH0 =oldComputeConditionalProbability(network, "C", "L", "B", "H");
+    CHBL0 =oldComputeConditionalProbability(network, "C", "H", "B", "L");
+    CMBL0 =oldComputeConditionalProbability(network, "C", "M", "B", "L");
+    CLBL0 =oldComputeConditionalProbability(network, "C", "L", "B", "L");
 
-    BHCH0 = computeConditionalProbability(network, "B", "H", "C", "H");
-    BLCH0 = computeConditionalProbability(network, "B", "L", "C", "H");
-    BHCM0 = computeConditionalProbability(network, "B", "H", "C", "M");
-    BLCM0 = computeConditionalProbability(network, "B", "L", "C", "M");
-    BHCL0 = computeConditionalProbability(network, "B", "H", "C", "L");
-    BLCL0 = computeConditionalProbability(network, "B", "L", "C", "L");
+    BHCH0 =oldComputeConditionalProbability(network, "B", "H", "C", "H");
+    BLCH0 =oldComputeConditionalProbability(network, "B", "L", "C", "H");
+    BHCM0 =oldComputeConditionalProbability(network, "B", "H", "C", "M");
+    BLCM0 =oldComputeConditionalProbability(network, "B", "L", "C", "M");
+    BHCL0 =oldComputeConditionalProbability(network, "B", "H", "C", "L");
+    BLCL0 =oldComputeConditionalProbability(network, "B", "L", "C", "L");
 
     auto stopOldConditioning = chrono::high_resolution_clock::now(); // end the timer for conditional probabilities
 
 
     auto startNewConditioning = chrono::high_resolution_clock::now(); // start the timer for conditional probabilities
-    AHBH1 = newComputeConditionalProbability(network, "A", "H", "B", "H");
-    AMBH1 = newComputeConditionalProbability(network, "A", "M", "B", "H");
-    ALBH1 = newComputeConditionalProbability(network, "A", "L", "B", "H");
-    AHBL1 = newComputeConditionalProbability(network, "A", "H", "B", "L");
-    AMBL1 = newComputeConditionalProbability(network, "A", "M", "B", "L");
-    ALBL1 = newComputeConditionalProbability(network, "A", "L", "B", "L");
+    AHBH1 = computeConditionalProbability(network, "A", "H", "B", "H");
+    AMBH1 = computeConditionalProbability(network, "A", "M", "B", "H");
+    ALBH1 = computeConditionalProbability(network, "A", "L", "B", "H");
+    AHBL1 = computeConditionalProbability(network, "A", "H", "B", "L");
+    AMBL1 = computeConditionalProbability(network, "A", "M", "B", "L");
+    ALBL1 = computeConditionalProbability(network, "A", "L", "B", "L");
 
-    BHAH1 = newComputeConditionalProbability(network, "B", "H", "A", "H");
-    BLAH1 = newComputeConditionalProbability(network, "B", "L", "A", "H");
-    BHAM1 = newComputeConditionalProbability(network, "B", "H", "A", "M");
-    BLAM1 = newComputeConditionalProbability(network, "B", "L", "A", "M");
-    BHAL1 = newComputeConditionalProbability(network, "B", "H", "A", "L");
-    BLAL1 = newComputeConditionalProbability(network, "B", "L", "A", "L");
+    BHAH1 = computeConditionalProbability(network, "B", "H", "A", "H");
+    BLAH1 = computeConditionalProbability(network, "B", "L", "A", "H");
+    BHAM1 = computeConditionalProbability(network, "B", "H", "A", "M");
+    BLAM1 = computeConditionalProbability(network, "B", "L", "A", "M");
+    BHAL1 = computeConditionalProbability(network, "B", "H", "A", "L");
+    BLAL1 = computeConditionalProbability(network, "B", "L", "A", "L");
 
-    AHCH1 = newComputeConditionalProbability(network, "A", "H", "C", "H");
-    AMCH1 = newComputeConditionalProbability(network, "A", "M", "C", "H");
-    ALCH1 = newComputeConditionalProbability(network, "A", "L", "C", "H");
-    AHCM1 = newComputeConditionalProbability(network, "A", "H", "C", "M");
-    AMCM1 = newComputeConditionalProbability(network, "A", "M", "C", "M");
-    ALCM1 = newComputeConditionalProbability(network, "A", "L", "C", "M");
-    AHCL1 = newComputeConditionalProbability(network, "A", "H", "C", "L");
-    AMCL1 = newComputeConditionalProbability(network, "A", "M", "C", "L");
-    ALCL1 = newComputeConditionalProbability(network, "A", "L", "C", "L");
+    AHCH1 = computeConditionalProbability(network, "A", "H", "C", "H");
+    AMCH1 = computeConditionalProbability(network, "A", "M", "C", "H");
+    ALCH1 = computeConditionalProbability(network, "A", "L", "C", "H");
+    AHCM1 = computeConditionalProbability(network, "A", "H", "C", "M");
+    AMCM1 = computeConditionalProbability(network, "A", "M", "C", "M");
+    ALCM1 = computeConditionalProbability(network, "A", "L", "C", "M");
+    AHCL1 = computeConditionalProbability(network, "A", "H", "C", "L");
+    AMCL1 = computeConditionalProbability(network, "A", "M", "C", "L");
+    ALCL1 = computeConditionalProbability(network, "A", "L", "C", "L");
 
-    CHAH1 = newComputeConditionalProbability(network, "C", "H", "A", "H");
-    CHAM1 = newComputeConditionalProbability(network, "C", "H", "A", "M");
-    CHAL1 = newComputeConditionalProbability(network, "C", "H", "A", "L");
-    CMAH1 = newComputeConditionalProbability(network, "C", "M", "A", "H");
-    CMAM1 = newComputeConditionalProbability(network, "C", "M", "A", "M");
-    CMAL1 = newComputeConditionalProbability(network, "C", "M", "A", "L");
-    CLAH1 = newComputeConditionalProbability(network, "C", "L", "A", "H");
-    CLAM1 = newComputeConditionalProbability(network, "C", "L", "A", "M");
-    CLAL1 = newComputeConditionalProbability(network, "C", "L", "A", "L");
+    CHAH1 = computeConditionalProbability(network, "C", "H", "A", "H");
+    CHAM1 = computeConditionalProbability(network, "C", "H", "A", "M");
+    CHAL1 = computeConditionalProbability(network, "C", "H", "A", "L");
+    CMAH1 = computeConditionalProbability(network, "C", "M", "A", "H");
+    CMAM1 = computeConditionalProbability(network, "C", "M", "A", "M");
+    CMAL1 = computeConditionalProbability(network, "C", "M", "A", "L");
+    CLAH1 = computeConditionalProbability(network, "C", "L", "A", "H");
+    CLAM1 = computeConditionalProbability(network, "C", "L", "A", "M");
+    CLAL1 = computeConditionalProbability(network, "C", "L", "A", "L");
 
-    CHBH1 = newComputeConditionalProbability(network, "C", "H", "B", "H");
-    CMBH1 = newComputeConditionalProbability(network, "C", "M", "B", "H");
-    CLBH1 = newComputeConditionalProbability(network, "C", "L", "B", "H");
-    CHBL1 = newComputeConditionalProbability(network, "C", "H", "B", "L");
-    CMBL1 = newComputeConditionalProbability(network, "C", "M", "B", "L");
-    CLBL1 = newComputeConditionalProbability(network, "C", "L", "B", "L");
+    CHBH1 = computeConditionalProbability(network, "C", "H", "B", "H");
+    CMBH1 = computeConditionalProbability(network, "C", "M", "B", "H");
+    CLBH1 = computeConditionalProbability(network, "C", "L", "B", "H");
+    CHBL1 = computeConditionalProbability(network, "C", "H", "B", "L");
+    CMBL1 = computeConditionalProbability(network, "C", "M", "B", "L");
+    CLBL1 = computeConditionalProbability(network, "C", "L", "B", "L");
 
-    BHCH1 = newComputeConditionalProbability(network, "B", "H", "C", "H");
-    BLCH1 = newComputeConditionalProbability(network, "B", "L", "C", "H");
-    BHCM1 = newComputeConditionalProbability(network, "B", "H", "C", "M");
-    BLCM1 = newComputeConditionalProbability(network, "B", "L", "C", "M");
-    BHCL1 = newComputeConditionalProbability(network, "B", "H", "C", "L");
-    BLCL1 = newComputeConditionalProbability(network, "B", "L", "C", "L");
+    BHCH1 = computeConditionalProbability(network, "B", "H", "C", "H");
+    BLCH1 = computeConditionalProbability(network, "B", "L", "C", "H");
+    BHCM1 = computeConditionalProbability(network, "B", "H", "C", "M");
+    BLCM1 = computeConditionalProbability(network, "B", "L", "C", "M");
+    BHCL1 = computeConditionalProbability(network, "B", "H", "C", "L");
+    BLCL1 = computeConditionalProbability(network, "B", "L", "C", "L");
 
     auto stopNewConditioning = chrono::high_resolution_clock::now(); // end the timer for conditional probabilities
 
@@ -260,14 +260,14 @@ int main(){
     chrono::duration<double, milli> translationDuration = endTranslation - startTranslation; // calculate the duration
     chrono::duration<double, milli> duration = endMarginalization - startMarginalization; // calculate the duration
     chrono::duration<double, milli> oldConditioningDuration = stopOldConditioning - startOldConditioning; // calculate the duration for conditional probabilities
-    chrono::duration<double, milli> newConditioningDuration = stopNewConditioning - startNewConditioning; // calculate the duration for conditional probabilities
+    chrono::duration<double, milli> conditioningDuration = stopNewConditioning - startNewConditioning; // calculate the duration for conditional probabilities
     chrono::duration<double, milli> printingDuration = endPrinting - startPrinting; // calculate the duration for printing
     cout << "\n\n\n"; // print a new line
     cout << "Parsing took: " << parsingDuration.count() << " ms" << endl; // print the duration
     cout << "Translation took: " << translationDuration.count() << " ms" << endl; // print the duration
     cout << "Marginalization took: " << duration.count() << " ms" << endl; // print the duration
     cout << "Old Conditioner took: " << oldConditioningDuration.count() << " ms" << endl; // print the duration for conditional probabilities
-    cout << "New Conditioner took: " << newConditioningDuration.count() << " ms" << endl; // print the duration for conditional probabilities
+    cout << "New Conditioner took: " << conditioningDuration.count() << " ms" << endl; // print the duration for conditional probabilities
     cout << "Printing took: " << printingDuration.count() << " ms" << endl; // print the duration for printing
 
     cout << "\n\nThat's all folks!" << endl; // print the end message
