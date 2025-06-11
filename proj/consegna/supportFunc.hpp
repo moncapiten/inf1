@@ -6,6 +6,9 @@
 #include <string>
 #include <algorithm>
 #include <cctype>
+#include <ctime>
+#include <sstream>
+#include <iomanip>
 
 
 using namespace std;
@@ -14,6 +17,8 @@ using namespace std;
 ostream& operator<<(ostream& os, const vector<double>& vec);
 ostream& operator<<(ostream& os, const vector<int>& vec);
 ostream& operator<<(ostream& os, const vector<string>& vec);
+
+std::string getCurrentTimestamp();
 
 bool checkParenthesis(const vector<string>& v);
 

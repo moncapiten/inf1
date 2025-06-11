@@ -30,6 +30,21 @@ ostream& operator<<(ostream& os, const vector<std::string>& vec) {
     return os << "]";
 }
 
+// Function to get the current timestamp in the format YYYYMMDD_HHMMSS
+// used for naming the log file
+string getCurrentTimestamp() {
+    auto t = time(nullptr);
+    auto tm = *localtime(&t);
+
+    // Format the time as YYYYMMDD_HHMMSS
+    ostringstream oss;
+    oss << put_time(&tm, "%Y%m%d_%H%M%S");
+    return oss.str();
+}
+
+
+
+
 // Creating Stack class used to check parenthesis balance
 template <typename T>
 void Stack<T>::push(const T & x){
