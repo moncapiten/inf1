@@ -248,7 +248,7 @@ void Parser::translator(vector<string>& group){
                 for(auto j = network.getNode_name(owner).probabilities.begin(); j < network.getNode_name(owner).probabilities.end(); j += network.getNode_name(owner).states.size()){
 
                     double testSum = accumulate(j, j + network.getNode_name(owner).states.size(), 0.0); // calculate the sum of the probabilities for each state
-                    if( abs(testSum - 1.0) > 1e-6 ){
+                    if( abs(testSum - 1.0) > EPSILON ){
                         throw runtime_error("PARSER ERROR - Line " + to_string(distance(network.getNode_name(owner).probabilities.begin(), j) / network.getNode_name(owner).states.size() ) + " in CPT does not sum to 1 for node: " + owner + "  ( sum = " + to_string(testSum) + " )"); // throw an error if the probabilities do not sum to 1
                     }
                 }
