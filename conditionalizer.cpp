@@ -84,6 +84,28 @@ void enumerateAllAssignments(const BayesianNetwork& net,
 
 
 
+double computeJointProbability(BayesianNetwork& net,
+                                const string& A, const string& a,
+                                const string& B, const string& b) {
+    // 0. Check if nodes exist and if states are valid
+    checkComputability(net, A, a, B, b);
+
+    // 1. Create a base assignment with A = a and B = b
+    unordered_map<string, string> base = {{A, a}, {B, b}};
+    vector<unordered_map<string, string>> fullAssignments;
+    enumerateAllAssignments(net, base, fullAssignments);
+
+    double jointProb = 0.0;
+    for (const auto& assign : fullAssignments) {
+        jointProb += computeJointProb(net, assign);
+    }
+    return jointProb;
+}
+
+
+
+
+
 // helper to check if everything is tip top to calculate conditional/joint probabilities
 /*
 void checkComputability(BayesianNetwork& net,
@@ -138,23 +160,7 @@ void checkComputability(BayesianNetwork& net,
 
 
 
-double computeJointProbability(BayesianNetwork& net,
-                                const string& A, const string& a,
-                                const string& B, const string& b) {
-    // 0. Check if nodes exist and if states are valid
-    checkComputability(net, A, a, B, b);
 
-    // 1. Create a base assignment with A = a and B = b
-    unordered_map<string, string> base = {{A, a}, {B, b}};
-    vector<unordered_map<string, string>> fullAssignments;
-    enumerateAllAssignments(net, base, fullAssignments);
-
-    double jointProb = 0.0;
-    for (const auto& assign : fullAssignments) {
-        jointProb += computeJointProb(net, assign);
-    }
-    return jointProb;
-}
 
 
 

@@ -272,7 +272,7 @@ double computeConditionalProbabilityVE(BayesianNetwork& net,
         for (const string& var : conditionFactor.vars) {
             condOnlyAssignment.push_back(conditions.at(var));
         }
-        marginal = conditionFactor.getValue(condOnlyAssignment); // marginal probability is the value of the condition factor for the condition assignment
+        marginal = conditionFactor.getValue(condOnlyAssignment); // marginal probability is the value of the condi
     }
     
     return marginal < EPSILON ? 0.0 : joint / marginal;
@@ -284,3 +284,85 @@ double computeConditionalProbabilityVE(BayesianNetwork& net, const string& A, co
     unordered_map<string, string> conditions = {{B, b}};
     return computeConditionalProbabilityVE(net, evidence, conditions);
 }
+
+
+
+
+
+// Compute joint probability P(X1=x1, X2=x2, ..., Xn=xn) using Variable Elimination
+double computeJointProbabilityVE(BayesianNetwork& net, const unordered_map<string, string>& assignment) {
+    // Create factors from CPTs
+    vector<Factor> factors;
+    for (const auto& node : net.getNodes()) {
+        factors.emplace_back(node, net);
+    }
+    
+    // Variables in the joint assignment
+    set<string> queryVars;
+    for (const auto& [var, state] : assignment) {
+        queryVars.insert(var);
+    }
+    
+    // Elimination order: all variables not in the assignment
+    vector<string> elimOrder;
+    for (const auto& node : net.getNodes()) {
+        if (queryVars.find(node.name) == queryVars.end()) {
+            elimOrder.push_back(node.name);
+        }
+    }
+    
+    // Variable elimination loop
+    for (const string& var : elimOrder) {
+        // Find factors containing this variable
+        vector<Factor> relevant, remaining;
+        for (const auto& factor : factors) {
+            if (find(factor.vars.begin(), factor.vars.end(), var) != factor.vars.end()) {
+                relevant.push_back(factor);
+            } else {
+                remaining.push_back(factor);
+            }
+        }
+        
+        // Multiply relevant factors
+        Factor combined = relevant[0];
+        for (int i = 1; i < relevant.size(); ++i) {
+            combined = multiply(combined, relevant[i]);
+        }
+        
+        // Eliminate the variable
+        Factor eliminated = eliminate(combined, var);
+        
+        // Update factor list
+        factors = remaining;
+        if (!eliminated.vars.empty() || !eliminated.table.empty()) {
+            factors.push_back(eliminated);
+        }
+    }
+    
+    // Multiply remaining factors to get final joint distribution
+    Factor final = factors[0];
+    for (int i = 1; i < factors.size(); ++i) {
+        final = multiply(final, factors[i]);
+    }
+    
+    // Extract the joint probability for the given assignment
+    vector<string> jointAssignment;
+    for (const string& var : final.vars) {
+        if (assignment.count(var)) {
+            jointAssignment.push_back(assignment.at(var));
+        }
+    }
+    
+    return final.getValue(jointAssignment);
+}
+
+// Convenience wrapper for two variables
+double computeJointProbabilityVE(BayesianNetwork& net, const string& A, const string& a, const string& B, const string& b) {
+    unordered_map<string, string> assignment = {{A, a}, {B, b}};
+    return computeJointProbabilityVE(net, assignment);
+}
+
+
+
+
+

@@ -44,6 +44,12 @@ double computeConditionalProbabilityVE(BayesianNetwork& net,
                                           const string& A, const string& a,
                                           const string& B, const string& b);
 
+double computeJointProbabilityVE(BayesianNetwork& net, const unordered_map<string, string>& assignment);
+
+double computeJointProbabilityVE(BayesianNetwork& net,
+                                          const string& A, const string& a,
+                                          const string& B, const string& b);
+
 
 
 
