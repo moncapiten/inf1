@@ -97,11 +97,11 @@ void Marginalizer::marginalizeNode(BayesianNode& node) {
     for (auto j = node.probabilities.begin(); j < node.probabilities.end(); j += node.states.size()) {
 
         for (auto k = j; k < j + node.states.size(); k++) {
-            double toBeAdded0 = *k; // get the first probability
+            double toBeAdded = *k; // get the first probability
             for (int m = 0; m < node.parents.size(); m++) {
-                toBeAdded0 *= outputNetwork.getNode_ID(node.parents[m]).pureProb[parentsStatesMask[m]]; // multiply the probabilities
+                toBeAdded *= outputNetwork.getNode_ID(node.parents[m]).pureProb[parentsStatesMask[m]]; // multiply the probabilities
             }
-            sums[k - j] += toBeAdded0; // add the probabilities to the sum
+            sums[k - j] += toBeAdded; // add the probabilities to the sum
         }
         updateVector(parentsStatesMask, node.parents);
 
