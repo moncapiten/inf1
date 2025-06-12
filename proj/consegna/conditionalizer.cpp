@@ -109,23 +109,23 @@ void checkComputability(BayesianNetwork& net, const unordered_map<string, string
 
     // Node and state checks
     for (const auto& [node, state] : evidence) {
-        if (net.getSubstitutionIndeces().find(node) == net.getSubstitutionIndeces().end()) throw invalid_argument("Node " + node + " not found in the network.");
-        if (find(net.getNode_name(node).states.begin(), net.getNode_name(node).states.end(), state) == net.getNode_name(node).states.end()) throw invalid_argument("State " + state + " not found in node " + node);
+        if (net.getSubstitutionIndeces().find(node) == net.getSubstitutionIndeces().end())      throw invalid_argument("Node " + node + " not found in the network.");
+        if (find(net.getNode_name(node).states.begin(), net.getNode_name(node).states.end(), state) == net.getNode_name(node).states.end())     throw invalid_argument("State " + state + " not found in node " + node);
     }
 
     for (const auto& [node, state] : conditions) {
-        if (net.getSubstitutionIndeces().find(node) == net.getSubstitutionIndeces().end()) throw invalid_argument("Node " + node + " not found in the network.");
-        if (find(net.getNode_name(node).states.begin(), net.getNode_name(node).states.end(), state) == net.getNode_name(node).states.end()) throw invalid_argument("State " + state + " not found in node " + node);
+        if (net.getSubstitutionIndeces().find(node) == net.getSubstitutionIndeces().end())      throw invalid_argument("Node " + node + " not found in the network.");
+        if (find(net.getNode_name(node).states.begin(), net.getNode_name(node).states.end(), state) == net.getNode_name(node).states.end())     throw invalid_argument("State " + state + " not found in node " + node);
+
+        // Check if the node is in evidence
+        // done here to avoid looping once more
+        if (evidence.count(node))       throw invalid_argument("Node " + node + " appears in both evidence and conditions");
+
     }
     
-    // Check that evidence and conditions don't overlap
-    for (const auto& [node, state] : evidence) {
-        if (conditions.count(node)) {
-            throw invalid_argument("Node " + node + " appears in both evidence and conditions");
-        }
-    }
 }
 
+// wrapping to maintain compatibility with the old interface
 void checkComputability(BayesianNetwork& net,
                                 const string& A, const string& a,
                                 const string& B, const string& b) {
