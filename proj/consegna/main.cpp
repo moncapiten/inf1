@@ -48,7 +48,6 @@ int main() {
     });
 
 
-    ///   YOU GOTTA CHANGE THE STANDARD ACONDITIONALIZER TO THE NEW VERSION YOU EEJIT
     parser.registerCommand("testCond", [&parser](const vector<string>& args) {
         if (args.size() != 1) {
             parser.respond("Usage: test\n");
@@ -58,7 +57,7 @@ int main() {
             BayesianNode A = parser.network.getNode_ID(0);
             BayesianNode B = parser.network.getNode_ID(parser.network.size() - 1);
 
-            parser.respond("P(" + A.name + "=" + A.states[0] + ", " + B.name + "=" + B.states[0] + ") = ");
+            parser.respond("P(" + A.name + "=" + A.states[0] + ", " + B.name + "=" + B.states[0] + ") = \n");
             auto start = chrono::high_resolution_clock::now();
             double result = computeConditionalProbability(parser.network, A.name, A.states[0], B.name, B.states[0]);
             auto end = chrono::high_resolution_clock::now();

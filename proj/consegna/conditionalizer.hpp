@@ -25,6 +25,10 @@ double computeJointProbability(BayesianNetwork& net, const string& A, const stri
 // Generate all consistent full assignments extending a partial one
 void enumerateAllAssignments(const BayesianNetwork& net, unordered_map<string, string>& partial, vector<unordered_map<string, string>>& out, size_t i = 0);
 
+// helper to check if all is good and computations can start
+void checkComputability(BayesianNetwork& net, const unordered_map<string, string>& evidence, const unordered_map<string, string>& conditions);
+void checkComputability(BayesianNetwork& net, const string& A, const string& a, const string& B, const string& b);
+
 // Main function: P(A = a | B = b)
 double oldComputeConditionalProbability(BayesianNetwork& net, const string& A, const string& a, const string& B, const string& b);
 
