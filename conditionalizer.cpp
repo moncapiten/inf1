@@ -85,6 +85,7 @@ void enumerateAllAssignments(const BayesianNetwork& net,
 
 
 // helper to check if everything is tip top to calculate conditional/joint probabilities
+/*
 void checkComputability(BayesianNetwork& net,
                                 const string& A, const string& a,
                                 const string& B, const string& b) {
@@ -99,9 +100,40 @@ void checkComputability(BayesianNetwork& net,
     if (find(net.getNode_name(A).states.begin(), net.getNode_name(A).states.end(), a) == net.getNode_name(A).states.end()) throw invalid_argument("State " + a + " not found in node " + A);
     if (find(net.getNode_name(B).states.begin(), net.getNode_name(B).states.end(), b) == net.getNode_name(B).states.end()) throw invalid_argument("State " + b + " not found in node " + B);
 }
+*/
 
+void checkComputability(BayesianNetwork& net, const unordered_map<string, string>& evidence, const unordered_map<string, string>& conditions) {
+    // Network-level checks
+    if (net.getSubstitutionIndeces().empty()) throw invalid_argument("Network is empty.");
+    if (!net.marginalized) throw runtime_error("Network is not marginalized. Please marginalize the network before computing conditional probabilities.");
 
+    // Node and state checks
+    for (const auto& [node, state] : evidence) {
+        if (net.getSubstitutionIndeces().find(node) == net.getSubstitutionIndeces().end()) throw invalid_argument("Node " + node + " not found in the network.");
+        if (find(net.getNode_name(node).states.begin(), net.getNode_name(node).states.end(), state) == net.getNode_name(node).states.end()) throw invalid_argument("State " + state + " not found in node " + node);
+    }
 
+    for (const auto& [node, state] : conditions) {
+        if (net.getSubstitutionIndeces().find(node) == net.getSubstitutionIndeces().end()) throw invalid_argument("Node " + node + " not found in the network.");
+        if (find(net.getNode_name(node).states.begin(), net.getNode_name(node).states.end(), state) == net.getNode_name(node).states.end()) throw invalid_argument("State " + state + " not found in node " + node);
+    }
+    
+    // Check that evidence and conditions don't overlap
+    for (const auto& [node, state] : evidence) {
+        if (conditions.count(node)) {
+            throw invalid_argument("Node " + node + " appears in both evidence and conditions");
+        }
+    }
+}
+
+void checkComputability(BayesianNetwork& net,
+                                const string& A, const string& a,
+                                const string& B, const string& b) {
+    unordered_map<string, string> evidence = {{A, a}};
+    unordered_map<string, string> conditions = {{B, b}};
+
+    checkComputability(net, evidence, conditions);
+}
 
 
 
@@ -172,10 +204,19 @@ double oldComputeConditionalProbability(BayesianNetwork& net,
 
 
 
-// test function with smarter enumeration
+
+
+
+
+
+
+
+
+// function with smarter enumeration
 // its a bit more efficient cause we do not enumerate all assignaments twice
 // complexity is still O( m^n ) but we reach it by only enumerating once
 // and checking if it can be used for both numerator and denominator
+/*
 double computeConditionalProbability(BayesianNetwork& net,
                                      const string& A, const string& a,
                                      const string& B, const string& b) {
@@ -200,5 +241,81 @@ double computeConditionalProbability(BayesianNetwork& net,
     
     return marginalB < EPSILON ? 0 : joint / marginalB;
 }
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+// extension to n evidence nodes and conditions
+double computeConditionalProbability(BayesianNetwork& net,
+                                     const unordered_map<string, string>& evidence,
+                                     const unordered_map<string, string>& conditions) {
+    // 0. Basic validation
+    checkComputability(net, evidence, conditions);
+
+    // 1. Start with conditions as base assignment
+    unordered_map<string, string> baseConditions = conditions;
+    vector<unordered_map<string, string>> allConditionAssignments;
+    enumerateAllAssignments(net, baseConditions, allConditionAssignments);
+    
+    double joint = 0, marginalConditions = 0;
+    
+    for (const auto& assign : allConditionAssignments) {
+        double prob = computeJointProb(net, assign);
+        marginalConditions += prob;
+        
+        // Check if this assignment also satisfies all evidence
+        bool satisfiesEvidence = true;
+        for (const auto& [evidenceNode, evidenceState] : evidence) {
+            if (assign.at(evidenceNode) != evidenceState) {
+                satisfiesEvidence = false;
+                break;
+            }
+        }
+        
+        if (satisfiesEvidence) {
+            joint += prob;
+        }
+    }
+    
+    return marginalConditions < EPSILON ? 0 : joint / marginalConditions;
+}
+
+// wrapper to work with just two nodes
+double computeConditionalProbability(BayesianNetwork& net, const string& A, const string& a, const string& B, const string& b) {
+    unordered_map<string, string> evidence = {{A, a}};
+    unordered_map<string, string> conditions = {{B, b}};
+    return computeConditionalProbability(net, evidence, conditions);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

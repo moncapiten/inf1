@@ -90,3 +90,12 @@ P(B=H, C=M) = 0.309554	0.309554
 P(B=L, C=M) = 0.690446	0.690446
 P(B=H, C=L) = 0.115877	0.115877
 P(B=L, C=L) = 0.884123	0.884123
+
+
+
+Parsing took: 0.300000 ms
+Translation took: 0.149100 ms
+Marginalization took: 0.037200 ms
+Old Conditioner took: 8.604500 ms
+New Conditioner took: 4.715100 ms
+Printing took: 13.577100 ms
