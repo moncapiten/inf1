@@ -419,6 +419,10 @@ void Parser::runInteractiveMode() {
     });
     
     registerCommand("network", [this](const vector<string>& args) {
+        if(args.size() > 2 || (args.size() == 2 && args[1] != "-v")) {
+            respond("Usage: network [-v]\n");
+            return;
+        }
         if (network.name.empty()) {
             respond("No network loaded.\n");
         } else {
