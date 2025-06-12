@@ -3,6 +3,7 @@
 #include "supportFunc.hpp"
 #include "marginalizer.hpp"
 #include "conditionalizer.hpp"
+#include "VE.hpp"
 
 #include <iostream>
 #include <chrono>
@@ -26,7 +27,7 @@ int main() {
             return;
         }
         try {
-            double result = computeConditionalProbability(parser.network, args[1], args[2], args[3], args[4]);
+            double result = computeConditionalProbabilityVE(parser.network, args[1], args[2], args[3], args[4]);
             parser.respond("P(" + args[1] + "=" + args[2] + " | " + args[3] + "=" + args[4] + ") = " + to_string(result) + "\n");
         } catch (const exception& e) {
             parser.respond("Error: " + string(e.what()) + "\n");
@@ -58,7 +59,7 @@ int main() {
 
             parser.respond("P(" + A.name + "=" + A.states[0] + ", " + B.name + "=" + B.states[0] + ") = \n");
             auto start = chrono::high_resolution_clock::now();
-            double result = computeConditionalProbability(parser.network, A.name, A.states[0], B.name, B.states[0]);
+            double result = computeConditionalProbabilityVE(parser.network, A.name, A.states[0], B.name, B.states[0]);
             auto end = chrono::high_resolution_clock::now();
             chrono::duration<double, milli> elapsed = end - start;
             auto timeTaken = elapsed.count();

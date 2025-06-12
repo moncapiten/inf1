@@ -3,7 +3,7 @@
 using namespace std;
 
 // just a bunch of overloads for printing vectors of different types
-ostream& operator<<(std::ostream& os, const std::vector<double>& vec) {
+ostream& operator<<(ostream& os, const vector<double>& vec) {
     os << "[";
     for (size_t i = 0; i < vec.size(); ++i) {
         os << vec[i];
@@ -12,7 +12,7 @@ ostream& operator<<(std::ostream& os, const std::vector<double>& vec) {
     return os << "]";
 }
 
-ostream& operator<<(std::ostream& os, const std::vector<int>& vec) {
+ostream& operator<<(ostream& os, const vector<int>& vec) {
     os << "[";
     for (size_t i = 0; i < vec.size(); ++i) {
         os << vec[i];
@@ -21,7 +21,7 @@ ostream& operator<<(std::ostream& os, const std::vector<int>& vec) {
     return os << "]";
 }
 
-ostream& operator<<(ostream& os, const vector<std::string>& vec) {
+ostream& operator<<(ostream& os, const vector<string>& vec) {
     os << "[";
     for (size_t i = 0; i < vec.size(); ++i) {
         os << vec[i];
@@ -29,6 +29,32 @@ ostream& operator<<(ostream& os, const vector<std::string>& vec) {
     }
     return os << "]";
 }
+
+ostream& operator<<(ostream& os, const map<vector<string>, double>& m) {
+    for (const auto& [key, value] : m) {
+        os << "[";
+        for (size_t i = 0; i < key.size(); ++i) {
+            if (i > 0) os << ", ";
+            os << "\"" << key[i] << "\"";
+        }
+        os << "] -> " << value << '\n';
+    }
+    return os;
+}
+
+ostream& operator<<(ostream& os, const map<string, vector<string>>& m) {
+    for (const auto& [key, value] : m) {
+        os << "\"" << key << "\" -> [";
+        for (size_t i = 0; i < value.size(); ++i) {
+            os << "\"" << value[i] << "\"";
+            if (i + 1 < value.size()) os << ", ";
+        }
+        os << "]\n";
+    }
+    return os;
+}
+
+
 
 // Function to get the current timestamp in the format YYYYMMDD_HHMMSS
 // used for naming the log file

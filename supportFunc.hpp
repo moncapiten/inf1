@@ -9,6 +9,7 @@
 #include <ctime>
 #include <sstream>
 #include <iomanip>
+#include <map>
 
 
 using namespace std;
@@ -17,6 +18,8 @@ using namespace std;
 ostream& operator<<(ostream& os, const vector<double>& vec);
 ostream& operator<<(ostream& os, const vector<int>& vec);
 ostream& operator<<(ostream& os, const vector<string>& vec);
+ostream& operator<<(ostream& os, const map<vector<string>, double>& m);
+ostream& operator<<(ostream& os, const map<string, vector<string>>& m);
 
 std::string getCurrentTimestamp();
 
