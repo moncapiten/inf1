@@ -1,4 +1,4 @@
-#include "marginalizer.hpp"
+#include "../include/marginalizer.hpp"
 
 
 

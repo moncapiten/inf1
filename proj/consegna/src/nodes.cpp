@@ -1,4 +1,4 @@
-#include "nodes.hpp"
+#include "../include/nodes.hpp"
 
 using namespace std;
 

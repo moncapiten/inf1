@@ -1,11 +1,11 @@
 #include <chrono>
 
-#include "newparser.hpp"
-#include "nodes.hpp"
-#include "supportFunc.hpp"
-#include "marginalizer.hpp"
-#include "conditionalizer.hpp"
-#include "VE.hpp"
+#include "../include/newparser.hpp"
+#include "../include/nodes.hpp"
+#include "../include/supportFunc.hpp"
+#include "../include/marginalizer.hpp"
+#include "../include/conditionalizer.hpp"
+#include "../include/VE.hpp"
 
 using namespace std;
 
