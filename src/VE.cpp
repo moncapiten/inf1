@@ -1,5 +1,5 @@
 // ACTUAL Variable Elimination
-#include "VE.hpp"
+#include "../include/VE.hpp"
 
 using namespace std;
 

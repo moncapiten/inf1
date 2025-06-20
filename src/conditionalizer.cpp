@@ -1,4 +1,4 @@
-#include "conditionalizer.hpp"
+#include "../include/conditionalizer.hpp"
 
 // Helper to get index of a state
 // just returns the index of the state in the node's states vector
