@@ -19,7 +19,7 @@ int main() {
             return;
         }
         parser.network = Marginalizer().marginalize(parser.network);
-    });
+    }, {}, "Marginalize the currently loaded Bayesian network, every node will contain in the pureProb vector its own marginal probabilities.\nNecessary before computing conditional/joint probabilities." );
 
     parser.registerCommand("cond", [&parser](const vector<string>& args) {
         if (args.size() != 5) {
@@ -32,7 +32,7 @@ int main() {
         } catch (const exception& e) {
             parser.respond("Error: " + string(e.what()) + "\n");
         }
-    });
+    }, {"<A> <a> <B> <b>"}, "Compute the conditional probability P(A=a | B=b) using variable elimination. It is relatively fast, but still requires a non-trivial amount of time for larger networks( >= 20 nodes).\nRequires the network to be marginalized first, use 'marg' command to do so.");
 
     parser.registerCommand("joint", [&parser](const vector<string>& args) {
         if (args.size() != 5) {
@@ -45,7 +45,8 @@ int main() {
         } catch (const exception& e) {
             parser.respond("Error: " + string(e.what()) + "\n");
         }
-    });
+    }, {"<A> <a> <B> <b>"}, "Compute the joint probability P(A=a, B=b) using variable elimination. It is relatively fast, but still requires a non-trivial amount of time for larger networks( >= 20 nodes).\nRequires the network to be marginalized first, use 'marg' command to do so.");
+
 
 
     parser.registerCommand("testCond", [&parser](const vector<string>& args) {
@@ -72,7 +73,7 @@ int main() {
         } catch (const exception& e) {
             parser.respond("Error: " + string(e.what()) + "\n");
         }
-    });
+    }, {}, "Test the conditional probability computation with a specific pair of nodes( first and last defined in the bif file).\nUseful to gauge the workability of the network.");
 
 
     // Start interactive mode

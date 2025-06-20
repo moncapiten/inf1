@@ -67,7 +67,7 @@ public:
     void interpret(const string& input);
 
     // register a command with its handler
-    void registerCommand(const string& name, function<void(const vector<string>&)> handler);
+    void registerCommand(const string& name, function<void(const vector<string>&)> handler, const vector<string>& args = {}, const string& description = "");
 
     // function to talk to the user and also log the response if so enabled
     void respond(const string& response, bool toConsole = true);
@@ -97,6 +97,9 @@ private:
 
     // command map to hold commands and their handlers
     map<string, function<void(const vector<string>&)>> commands;
+    map<string, vector<string>> commandArgs; // to hold arguments for commands
+    map<string, string> commandDescription; // to hold descriptions for commands
+
     vector<vector<string>> commandGroups; // separate from dividedGroups
 
     // commandGrouper, groups tokens into a single command group

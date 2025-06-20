@@ -362,38 +362,77 @@ void Parser::executeCommand(const vector<string>& commandTokens) {
 }
 
 // just adds the commands to the map with their handlers( handler have to match the signature: void(const vector<string>&) )
-void Parser::registerCommand(const string& name, function<void(const vector<string>&)> handler) {
+void Parser::registerCommand(const string& name, function<void(const vector<string>&)> handler, const vector<string>& args, const string& description) {
+    if (commands.find(name) != commands.end()) {
+        respond("Command '" + name + "' is already registered.\n");
+        return; // Prevent re-registering the same command
+    }
     commands[name] = handler;
+    commandArgs[name] = args; // Store the command arguments
+    commandDescription[name] = description; // Store the command description
 }
 
 void Parser::runInteractiveMode() {
     // Register default commands
     registerCommand("help", [this](const vector<string>& args) {
+        if( args.size() > 1) {
+            if( commands.find(args[1]) != commands.end() ) {
+                respond("  Command: " + args[1] + "\n");
+                respond("  Arguments: ");
+                if( commandArgs[args[1]].empty() ) {
+                    respond("None\n");
+                } else {
+                    for (const auto& arg : commandArgs[args[1]]) {
+                        respond(arg + " ");
+                    }
+                    respond("\n");
+                }
+                respond("  Description: " + commandDescription[args[1]] + "\n");
+                return;
+            } else {
+                respond("  Unknown command: " + args[1] + "\n");
+                return;
+            }
+        }
+
+        // If no specific command is requested, list all commands
         respond("Available commands:\n");
         for (const auto& cmd : commands) {
-            respond("  " + cmd.first + "\n");
+            respond("  " + cmd.first);
+            if (!commandArgs[cmd.first].empty()) {
+                if( cmd.first.length() < 6 ) respond("\t"); // for sure put one tab, if name is short 2 so that it looks nice
+                respond("\t[ ");
+                for (const auto& arg : commandArgs[cmd.first]) {
+                    respond(arg + " ");
+                }
+                respond("]");
+            }
+            respond("\n");
         }
+        respond("Type 'help <command>' for more information on a specific command.\n");
     });
 
-    registerCommand("log", [this](const vector<string>& args) {
+
+    registerCommand( "log", [this](const vector<string>& args ) {
         if (args.size() != 2) {
             respond("Usage: log <on/off>\n");
             return;
         }
-        if (args[1] == "on") {
+        if (args[1] == commandArgs["log"][0]) { // "on"
             logging = true;
 
             ofstream logFile("log/" + getCurrentTimestamp() + "_log.txt");
             log = move(logFile);
             respond("Logging enabled\n");
-        } else if (args[1] == "off") {
+        } else if (args[1] == commandArgs["log"][1]) { // "off"
             logging = false;
             respond("Logging disabled\n");
             if (log.is_open()) log.close();
         } else {
             respond("Invalid argument. Use 'on' or 'off'.\n");
         }
-    });
+    }, {"on", "off"}, "Enable or disable logging of commands and responses, the log is saved in /log/yyyymmdd_hhmmss_log.txt");
+
 
     
     registerCommand("quit", [this](const vector<string>& args) {
@@ -402,7 +441,7 @@ void Parser::runInteractiveMode() {
             log.close(); // Close the log file if it's open
         }
         exit(0);
-    });
+    }, {}, "Pretty sure you can guess what this does mate...");
     
     registerCommand("load", [this](const vector<string>& args) {
         if (args.size() != 2) {
@@ -416,7 +455,8 @@ void Parser::runInteractiveMode() {
         } catch (const exception& e) {
             respond("Error loading file: " + string(e.what()) + "\n");
         }
-    });
+    }, {"<filename>"},
+    "Load a .bif file and parse it into internal represantation, run `translate` to obtain a usable network.\n <filename> should be full path to the file( either relative or absolute) with file extension.\nThe load will fail if the file is malformed.");
     
     registerCommand("network", [this](const vector<string>& args) {
         if(args.size() > 2 || (args.size() == 2 && args[1] != "-v")) {
@@ -435,8 +475,8 @@ void Parser::runInteractiveMode() {
                 respond("Nodes: " + to_string(network.size()) + "\n");
             }
         }
-    });
-    
+    }, {"-v"}, "Show the current network information, use -v to obtain a full printout - WARNING it takes time and is not recommended for large networks.");
+
     registerCommand("node", [this](const vector<string>& args) {
         if (network.name.empty()) {
             respond("No network loaded.\n");
@@ -458,7 +498,7 @@ void Parser::runInteractiveMode() {
         } catch (const exception& e) {
             respond("Error retrieving node: " + string(e.what()) + "\n");
         }
-    });
+    }, {"<node_name> or <node_ID>"}, "Obtain full printout of specific node by name or ID");
     
     // Interactive loop
     string input;
