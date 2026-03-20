@@ -95,17 +95,30 @@ void Marginalizer::marginalizeNode(BayesianNode& node) {
     // every node gets iterated over its states and every entry in the cpt gets multipied
     // by the probabilities of its parents, then summed up
     for (auto j = node.probabilities.begin(); j < node.probabilities.end(); j += node.states.size()) {
+        cout << "Changed row" << endl;
 
         for (auto k = j; k < j + node.states.size(); k++) {
+            cout << "Evaluating the " << to_string(k - j) << "th entry of " << to_string(j - node.probabilities.begin()) << "th row : " << *k << " as part of the CPT of " << node.name << " with mask " << parentsStatesMask << endl;
             double toBeAdded = *k; // get the first probability
             for (int m = 0; m < node.parents.size(); m++) {
                 toBeAdded *= outputNetwork.getNode_ID(node.parents[m]).pureProb[parentsStatesMask[m]]; // multiply the probabilities
             }
             sums[k - j] += toBeAdded; // add the probabilities to the sum
+            cout << "Added " << to_string(toBeAdded) << " to the " << to_string(k - j) << "th entry of the sums vector, now equal to: " << to_string(sums[k - j]) << endl;
         }
         updateVector(parentsStatesMask, node.parents);
 
     }
+    // Wordy explanation of the above code:
+    // We iterate a "row" of the CPT at a time, as inside one row the parent's states are static
+    // so we calculate the correct mask for a specific row, then we iterate over the entries of that row,
+    // multypling them by the pureProbs( marginalized probabilities) of the parent's specificc states, 
+    // which we obtain through the mask.
+    // We use "sums[k - j]" in order to remember multiple values of the node's pureProbs, and we update each entry
+    // in sums once per row, given how k increases while j is just the start of the row, so k-j is both the index of
+    // the entry in the CPT's row and the index of the sums vector.
+    
+    // We do not need to normalize the result as the products are done in such a way as to be already normalized
 
     // test to see if the probs sum to 1 - there's leeway for floating point errors
     double testSum = accumulate(sums.begin(), sums.end(), 0.0); // calculate the sum of the probabilities

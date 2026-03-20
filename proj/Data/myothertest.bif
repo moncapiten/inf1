@@ -1,7 +1,7 @@
 network myTest {
 }
 variable A {
-  type discrete [ 2 ] { H, L };
+  type discrete [ 2 ] { L, H };
 }
 variable D {
   type discrete [ 2 ] { H, L}

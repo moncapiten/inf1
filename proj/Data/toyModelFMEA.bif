@@ -1,0 +1,61 @@
+network "SmartLightFMEA" {
+}
+
+variable A {
+    type discrete [2] { No, Yes };
+}
+
+variable B {
+    type discrete [2] { No, Yes };
+}
+
+variable C {
+    type discrete [2] { No, Yes };
+}
+
+variable D {
+    type discrete [2] { No, Yes };
+}
+
+variable E {
+    type discrete [2] { No, Yes };
+}
+
+variable F {
+    type discrete [2] { Off, On };
+}
+
+probability ( A ) {
+    table 0.01, 0.99;
+}
+
+probability ( B ) {
+    table 0.05, 0.95;
+}
+
+probability ( E ) {
+    table 0.10, 0.90;
+}
+
+probability ( C | B ) {
+    ( No ) 0.30, 0.70;
+    ( Yes ) 0.01, 0.99;
+}
+
+probability ( D | B, E ) {
+    ( No, No ) 0.90, 0.10;
+    ( Yes, No ) 0.30, 0.70;
+    ( No, Yes ) 0.50, 0.50;
+    ( Yes, Yes ) 0.05, 0.95;
+}
+
+probability ( F | A, C, D ) {
+    ( No, No, No )   0.99, 0.01;
+    ( Yes, No, No )  0.90, 0.10;
+    ( No, Yes, No )  0.90, 0.10;
+    ( Yes, Yes, No ) 0.20, 0.80;
+    ( No, No, Yes )  0.95, 0.05;
+    ( Yes, No, Yes ) 0.30, 0.70;
+    ( No, Yes, Yes ) 0.80, 0.20;
+    ( Yes, Yes, Yes) 0.01,0.99;
+}
